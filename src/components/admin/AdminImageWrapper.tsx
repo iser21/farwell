@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import { Pencil, Trash2, Upload, RefreshCw, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import { useFrontendAdmin } from "@/contexts/FrontendAdminContext";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import {
   validateImageFile,
