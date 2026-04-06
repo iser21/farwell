@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/Loader";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { Shield, Check, X, Trash2, LogOut, ArrowLeft, MessageCircleHeart, RefreshCw } from "lucide-react";
+import { Shield, Check, X, Trash2, LogOut, ArrowLeft, MessageCircleHeart, RefreshCw, Image } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface Confession {
