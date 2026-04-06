@@ -243,7 +243,7 @@ export function ConfessionsSection() {
     }
   });
 
-  const allIds = useMemo(() => confessions.map((c) => c.id), [confessions]);
+  
 
   const fetchApproved = async () => {
     setLoading(true);
