@@ -188,7 +188,7 @@ export function JourneyTimeline() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground tracking-tight mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight mb-4">
             The Journey
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
