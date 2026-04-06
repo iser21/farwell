@@ -16,6 +16,7 @@ const navLinks = [
   { label: "Legends", href: "#legends" },
   { label: "Autographs", href: "#autographs" },
   { label: "Confessions", href: "#confessions" },
+  { label: "Awards", href: "#awards" },
 ];
 
 const Landing = () => {
