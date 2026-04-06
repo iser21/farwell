@@ -57,9 +57,9 @@ const MAX_LENGTH = 300;
 
 /* ── Confession Card (public) ── */
 function ConfessionCard({
-  c, i, allIds, isAdmin, userReactions, onReaction, onDelete,
+  c, i, isAdmin, userReactions, onReaction, onDelete,
 }: {
-  c: Confession; i: number; allIds: string[]; isAdmin: boolean;
+  c: Confession; i: number; isAdmin: boolean;
   userReactions: Record<string, string[]>;
   onReaction: (id: string, type: "heart" | "laugh" | "wow") => void;
   onDelete: (id: string) => void;
