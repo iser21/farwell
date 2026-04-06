@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { AdminImageWrapper } from "@/components/admin/AdminImageWrapper";
 import heroFallback from "@/assets/hero-group-photo.jpg";
 
 export function HeroSection() {
@@ -10,20 +11,24 @@ export function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background image */}
-      <div className="absolute inset-0">
-        <img
-          src={heroImg}
-          alt="Batch 2022–2026 group photo"
-          className="w-full h-full object-cover"
-          width={1920}
-          height={1080}
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = heroFallback;
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-foreground/60 via-foreground/40 to-foreground/80" />
-      </div>
+      {/* Background image with admin edit */}
+      <AdminImageWrapper contentKey="hero_image" folder="hero" className="absolute inset-0">
+        {(dbUrl) => (
+          <>
+            <img
+              src={dbUrl || heroFallback}
+              alt="Batch 2022–2026 group photo"
+              className="w-full h-full object-cover"
+              width={1920}
+              height={1080}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = heroFallback;
+              }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-foreground/60 via-foreground/40 to-foreground/80" />
+          </>
+        )}
+      </AdminImageWrapper>
 
       {/* Content */}
       <motion.div

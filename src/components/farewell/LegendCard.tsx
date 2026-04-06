@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { type Legend, type BadgeType, badgeConfig, getCardTransform } from "./legendsData";
+import { AdminImageWrapper } from "@/components/admin/AdminImageWrapper";
 
 interface LegendCardProps {
   legend: Legend;
@@ -20,7 +21,7 @@ export const LegendCard = memo(function LegendCard({ legend, index, isHighlighte
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.04 }}
-    style={{ marginTop: typeof window !== "undefined" && window.innerWidth < 640 ? 0 : yOffset }}
+      style={{ marginTop: typeof window !== "undefined" && window.innerWidth < 640 ? 0 : yOffset }}
     >
       <motion.button
         onClick={() => onClick(legend)}
@@ -36,14 +37,23 @@ export const LegendCard = memo(function LegendCard({ legend, index, isHighlighte
 
         {/* Polaroid */}
         <div className="bg-card rounded-sm pt-3 px-3 pb-4 shadow-lg group-hover:shadow-2xl transition-shadow duration-300 w-[140px] sm:w-[155px] lg:w-[165px]">
-          <div className="aspect-square overflow-hidden rounded-sm bg-muted">
-            <img
-              src={legend.nowPhoto}
-              alt={legend.name}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              loading="lazy"
-            />
-          </div>
+          <AdminImageWrapper
+            contentKey={`profile_img_${legend.id}`}
+            folder="profiles"
+            className="aspect-square overflow-hidden rounded-sm"
+          >
+            {(dbUrl) => (
+              <img
+                src={dbUrl || legend.nowPhoto}
+                alt={legend.name}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = legend.nowPhoto;
+                }}
+              />
+            )}
+          </AdminImageWrapper>
           <p className="mt-2.5 text-center text-xs sm:text-sm font-display font-semibold text-card-foreground truncate">
             {legend.name}
           </p>

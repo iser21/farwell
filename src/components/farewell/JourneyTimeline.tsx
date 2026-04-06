@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { AdminImageWrapper } from "@/components/admin/AdminImageWrapper";
 
 // Fallback imports
 import year1Img from "@/assets/year1-classroom.jpg";
@@ -19,54 +20,34 @@ import year4Graduation from "@/assets/year4-graduation.jpg";
 import year4Group from "@/assets/year4-groupphoto.jpg";
 
 interface YearImage {
-  src: string;
+  contentKey: string;
+  fallback: string;
   caption: string;
 }
 
 const FALLBACK_IMAGES: Record<string, string> = {
-  year1_img1: year1Img,
-  year1_img2: year1FirstDay,
-  year1_img3: year1Study,
-  year2_img1: year2Img,
-  year2_img2: year2Dance,
-  year2_img3: year2Canteen,
-  year3_img1: year3Img,
-  year3_img2: year3Presentation,
-  year3_img3: year3Internship,
-  year4_img1: year4Img,
-  year4_img2: year4Graduation,
-  year4_img3: year4Group,
+  year1_img1: year1Img, year1_img2: year1FirstDay, year1_img3: year1Study,
+  year2_img1: year2Img, year2_img2: year2Dance, year2_img3: year2Canteen,
+  year3_img1: year3Img, year3_img2: year3Presentation, year3_img3: year3Internship,
+  year4_img1: year4Img, year4_img2: year4Graduation, year4_img3: year4Group,
 };
 
 const CAPTIONS: Record<string, string> = {
-  year1_img1: "Orientation Day",
-  year1_img2: "First Lecture",
-  year1_img3: "Library Sessions",
-  year2_img1: "College Fest",
-  year2_img2: "Stage Performance",
-  year2_img3: "Canteen Vibes",
-  year3_img1: "Project Season",
-  year3_img2: "Presentations",
-  year3_img3: "Internship Life",
-  year4_img1: "Farewell Night",
-  year4_img2: "Graduation Day",
-  year4_img3: "Last Group Photo",
+  year1_img1: "Orientation Day", year1_img2: "First Lecture", year1_img3: "Library Sessions",
+  year2_img1: "College Fest", year2_img2: "Stage Performance", year2_img3: "Canteen Vibes",
+  year3_img1: "Project Season", year3_img2: "Presentations", year3_img3: "Internship Life",
+  year4_img1: "Farewell Night", year4_img2: "Graduation Day", year4_img3: "Last Group Photo",
 };
 
-function buildYears(content: Record<string, string>) {
-  const img = (key: string): string => content[key] || FALLBACK_IMAGES[key] || "";
-
+function buildYears() {
   return [
     {
-      year: "1st Year",
-      period: "2022–2023",
-      emoji: "🌱",
-      color: "from-emerald-500 to-teal-400",
-      glowColor: "shadow-emerald-500/30",
+      year: "1st Year", period: "2022–2023", emoji: "🌱", folder: "timeline",
+      color: "from-emerald-500 to-teal-400", glowColor: "shadow-emerald-500/30",
       images: [
-        { src: img("year1_img1"), caption: CAPTIONS.year1_img1 },
-        { src: img("year1_img2"), caption: CAPTIONS.year1_img2 },
-        { src: img("year1_img3"), caption: CAPTIONS.year1_img3 },
+        { contentKey: "year1_img1", fallback: FALLBACK_IMAGES.year1_img1, caption: CAPTIONS.year1_img1 },
+        { contentKey: "year1_img2", fallback: FALLBACK_IMAGES.year1_img2, caption: CAPTIONS.year1_img2 },
+        { contentKey: "year1_img3", fallback: FALLBACK_IMAGES.year1_img3, caption: CAPTIONS.year1_img3 },
       ] as YearImage[],
       tags: ["Orientation", "New Friends", "First Exams"],
       memories: [
@@ -77,15 +58,12 @@ function buildYears(content: Record<string, string>) {
       ],
     },
     {
-      year: "2nd Year",
-      period: "2023–2024",
-      emoji: "🎉",
-      color: "from-amber-500 to-orange-400",
-      glowColor: "shadow-amber-500/30",
+      year: "2nd Year", period: "2023–2024", emoji: "🎉", folder: "timeline",
+      color: "from-amber-500 to-orange-400", glowColor: "shadow-amber-500/30",
       images: [
-        { src: img("year2_img1"), caption: CAPTIONS.year2_img1 },
-        { src: img("year2_img2"), caption: CAPTIONS.year2_img2 },
-        { src: img("year2_img3"), caption: CAPTIONS.year2_img3 },
+        { contentKey: "year2_img1", fallback: FALLBACK_IMAGES.year2_img1, caption: CAPTIONS.year2_img1 },
+        { contentKey: "year2_img2", fallback: FALLBACK_IMAGES.year2_img2, caption: CAPTIONS.year2_img2 },
+        { contentKey: "year2_img3", fallback: FALLBACK_IMAGES.year2_img3, caption: CAPTIONS.year2_img3 },
       ] as YearImage[],
       tags: ["Fests", "Late Nights", "First Crush"],
       memories: [
@@ -96,15 +74,12 @@ function buildYears(content: Record<string, string>) {
       ],
     },
     {
-      year: "3rd Year",
-      period: "2024–2025",
-      emoji: "🚀",
-      color: "from-violet-500 to-purple-400",
-      glowColor: "shadow-violet-500/30",
+      year: "3rd Year", period: "2024–2025", emoji: "🚀", folder: "timeline",
+      color: "from-violet-500 to-purple-400", glowColor: "shadow-violet-500/30",
       images: [
-        { src: img("year3_img1"), caption: CAPTIONS.year3_img1 },
-        { src: img("year3_img2"), caption: CAPTIONS.year3_img2 },
-        { src: img("year3_img3"), caption: CAPTIONS.year3_img3 },
+        { contentKey: "year3_img1", fallback: FALLBACK_IMAGES.year3_img1, caption: CAPTIONS.year3_img1 },
+        { contentKey: "year3_img2", fallback: FALLBACK_IMAGES.year3_img2, caption: CAPTIONS.year3_img2 },
+        { contentKey: "year3_img3", fallback: FALLBACK_IMAGES.year3_img3, caption: CAPTIONS.year3_img3 },
       ] as YearImage[],
       tags: ["Internships", "Projects", "Growth"],
       memories: [
@@ -115,15 +90,12 @@ function buildYears(content: Record<string, string>) {
       ],
     },
     {
-      year: "Final Year",
-      period: "2025–2026",
-      emoji: "🎓",
-      color: "from-primary to-rose-400",
-      glowColor: "shadow-primary/30",
+      year: "Final Year", period: "2025–2026", emoji: "🎓", folder: "timeline",
+      color: "from-primary to-rose-400", glowColor: "shadow-primary/30",
       images: [
-        { src: img("year4_img1"), caption: CAPTIONS.year4_img1 },
-        { src: img("year4_img2"), caption: CAPTIONS.year4_img2 },
-        { src: img("year4_img3"), caption: CAPTIONS.year4_img3 },
+        { contentKey: "year4_img1", fallback: FALLBACK_IMAGES.year4_img1, caption: CAPTIONS.year4_img1 },
+        { contentKey: "year4_img2", fallback: FALLBACK_IMAGES.year4_img2, caption: CAPTIONS.year4_img2 },
+        { contentKey: "year4_img3", fallback: FALLBACK_IMAGES.year4_img3, caption: CAPTIONS.year4_img3 },
       ] as YearImage[],
       tags: ["Placements", "Farewell", "Last Memories"],
       memories: [
@@ -136,8 +108,9 @@ function buildYears(content: Record<string, string>) {
   ];
 }
 
-function MiniCarousel({ images }: { images: YearImage[] }) {
+function MiniCarousel({ images, folder }: { images: YearImage[]; folder: string }) {
   const [current, setCurrent] = useState(0);
+  const { content } = useSiteContent();
 
   const next = useCallback(() => setCurrent((c) => (c + 1) % images.length), [images.length]);
   const prev = useCallback(() => setCurrent((c) => (c - 1 + images.length) % images.length), [images.length]);
@@ -147,53 +120,64 @@ function MiniCarousel({ images }: { images: YearImage[] }) {
     return () => clearInterval(timer);
   }, [next]);
 
+  const currentImage = images[current];
+  const imgSrc = content[currentImage.contentKey] || currentImage.fallback;
+
   return (
     <div className="relative h-44 overflow-hidden group">
-      <AnimatePresence mode="wait">
-        <motion.img
-          key={current}
-          src={images[current].src}
-          alt={images[current].caption}
-          loading="lazy"
-          width={768}
-          height={512}
-          className="w-full h-full object-cover absolute inset-0"
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.5 }}
-        />
-      </AnimatePresence>
+      <AdminImageWrapper
+        contentKey={currentImage.contentKey}
+        folder={folder}
+        className="absolute inset-0"
+      >
+        {(dbUrl) => (
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={`${current}-${dbUrl || currentImage.fallback}`}
+              src={dbUrl || currentImage.fallback}
+              alt={currentImage.caption}
+              loading="lazy"
+              width={768}
+              height={512}
+              className="w-full h-full object-cover absolute inset-0"
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.5 }}
+            />
+          </AnimatePresence>
+        )}
+      </AdminImageWrapper>
 
-      <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent pointer-events-none" />
 
       <AnimatePresence mode="wait">
         <motion.span
           key={current}
-          className="absolute top-3 right-3 text-[10px] font-medium bg-background/60 backdrop-blur-sm text-foreground px-2 py-0.5 rounded-full"
+          className="absolute top-3 right-3 text-[10px] font-medium bg-background/60 backdrop-blur-sm text-foreground px-2 py-0.5 rounded-full z-10"
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
-          {images[current].caption}
+          {currentImage.caption}
         </motion.span>
       </AnimatePresence>
 
       <button
         onClick={(e) => { e.stopPropagation(); prev(); }}
-        className="absolute left-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute left-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
       >
         <ChevronLeft className="w-3.5 h-3.5 text-foreground" />
       </button>
       <button
         onClick={(e) => { e.stopPropagation(); next(); }}
-        className="absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
       >
         <ChevronRight className="w-3.5 h-3.5 text-foreground" />
       </button>
 
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-1.5">
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
         {images.map((_, idx) => (
           <button
             key={idx}
@@ -209,8 +193,7 @@ function MiniCarousel({ images }: { images: YearImage[] }) {
 }
 
 export function JourneyTimeline() {
-  const { content } = useSiteContent();
-  const years = buildYears(content);
+  const years = buildYears();
 
   return (
     <section id="timeline" className="py-12 sm:py-20 lg:py-28 bg-card relative overflow-hidden">
@@ -275,7 +258,7 @@ export function JourneyTimeline() {
                   whileHover={{ scale: 1.02 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 >
-                  <MiniCarousel images={item.images} />
+                  <MiniCarousel images={item.images} folder={item.folder} />
 
                   <div className="px-5 -mt-8 relative z-10">
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
