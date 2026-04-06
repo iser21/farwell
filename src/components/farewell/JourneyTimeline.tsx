@@ -212,7 +212,7 @@ export function JourneyTimeline() {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: i * 0.15 }}
             >
-              <div className="absolute left-6 md:left-1/2 -translate-x-1/2 z-10">
+              <div className="absolute left-4 sm:left-6 md:left-1/2 -translate-x-1/2 z-10 hidden sm:flex">
                 <motion.div
                   className={`w-14 h-14 rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center text-2xl shadow-lg ${item.glowColor}`}
                   whileInView={{
