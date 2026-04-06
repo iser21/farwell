@@ -1,0 +1,2 @@
+ALTER TABLE public.autograph_messages ADD COLUMN IF NOT EXISTS likes integer NOT NULL DEFAULT 0;
+ALTER TABLE public.autograph_messages ADD COLUMN IF NOT EXISTS category text NOT NULL DEFAULT 'appreciation';
