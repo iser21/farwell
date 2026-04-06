@@ -2,6 +2,9 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useSiteContent } from "@/hooks/useSiteContent";
+
+// Fallback imports
 import year1Img from "@/assets/year1-classroom.jpg";
 import year1FirstDay from "@/assets/year1-firstday.jpg";
 import year1Study from "@/assets/year1-study.jpg";
@@ -20,84 +23,118 @@ interface YearImage {
   caption: string;
 }
 
-const years = [
-  {
-    year: "1st Year",
-    period: "2022–2023",
-    emoji: "🌱",
-    color: "from-emerald-500 to-teal-400",
-    glowColor: "shadow-emerald-500/30",
-    images: [
-      { src: year1Img, caption: "Orientation Day" },
-      { src: year1FirstDay, caption: "First Lecture" },
-      { src: year1Study, caption: "Library Sessions" },
-    ] as YearImage[],
-    tags: ["Orientation", "New Friends", "First Exams"],
-    memories: [
-      "Walking into campus with zero clue and full excitement",
-      "Making lifelong friends over canteen chai ☕",
-      "Surviving the first internals with last-night magic",
-      "That one senior who scared us on Day 1 😂",
-    ],
-  },
-  {
-    year: "2nd Year",
-    period: "2023–2024",
-    emoji: "🎉",
-    color: "from-amber-500 to-orange-400",
-    glowColor: "shadow-amber-500/30",
-    images: [
-      { src: year2Img, caption: "College Fest" },
-      { src: year2Dance, caption: "Stage Performance" },
-      { src: year2Canteen, caption: "Canteen Vibes" },
-    ] as YearImage[],
-    tags: ["Fests", "Late Nights", "First Crush"],
-    memories: [
-      "College fests where we danced like nobody watched 💃",
-      "Late-night study sessions that turned into gossip sessions",
-      "First crushes, first heartbreaks, first real friendships",
-      "Bunking lectures together became an art form 🎨",
-    ],
-  },
-  {
-    year: "3rd Year",
-    period: "2024–2025",
-    emoji: "🚀",
-    color: "from-violet-500 to-purple-400",
-    glowColor: "shadow-violet-500/30",
-    images: [
-      { src: year3Img, caption: "Project Season" },
-      { src: year3Presentation, caption: "Presentations" },
-      { src: year3Internship, caption: "Internship Life" },
-    ] as YearImage[],
-    tags: ["Internships", "Projects", "Growth"],
-    memories: [
-      "Internships that made us feel like real professionals",
-      "Group projects where one person did all the work 😅",
-      "Started figuring out what we actually want in life",
-      "Leadership roles that taught us more than any textbook",
-    ],
-  },
-  {
-    year: "Final Year",
-    period: "2025–2026",
-    emoji: "🎓",
-    color: "from-primary to-rose-400",
-    glowColor: "shadow-primary/30",
-    images: [
-      { src: year4Img, caption: "Farewell Night" },
-      { src: year4Graduation, caption: "Graduation Day" },
-      { src: year4Group, caption: "Last Group Photo" },
-    ] as YearImage[],
-    tags: ["Placements", "Farewell", "Last Memories"],
-    memories: [
-      "Placement season — stress, success, and celebration 🎉",
-      "Last chai breaks knowing they won't last forever",
-      "Farewell photos with people we'll never forget",
-      "Promising to stay in touch… and meaning it this time ❤️",
-    ],
-  },
-];
+const FALLBACK_IMAGES: Record<string, string> = {
+  year1_img1: year1Img,
+  year1_img2: year1FirstDay,
+  year1_img3: year1Study,
+  year2_img1: year2Img,
+  year2_img2: year2Dance,
+  year2_img3: year2Canteen,
+  year3_img1: year3Img,
+  year3_img2: year3Presentation,
+  year3_img3: year3Internship,
+  year4_img1: year4Img,
+  year4_img2: year4Graduation,
+  year4_img3: year4Group,
+};
+
+const CAPTIONS: Record<string, string> = {
+  year1_img1: "Orientation Day",
+  year1_img2: "First Lecture",
+  year1_img3: "Library Sessions",
+  year2_img1: "College Fest",
+  year2_img2: "Stage Performance",
+  year2_img3: "Canteen Vibes",
+  year3_img1: "Project Season",
+  year3_img2: "Presentations",
+  year3_img3: "Internship Life",
+  year4_img1: "Farewell Night",
+  year4_img2: "Graduation Day",
+  year4_img3: "Last Group Photo",
+};
+
+function buildYears(content: Record<string, string>) {
+  const img = (key: string): string => content[key] || FALLBACK_IMAGES[key] || "";
+
+  return [
+    {
+      year: "1st Year",
+      period: "2022–2023",
+      emoji: "🌱",
+      color: "from-emerald-500 to-teal-400",
+      glowColor: "shadow-emerald-500/30",
+      images: [
+        { src: img("year1_img1"), caption: CAPTIONS.year1_img1 },
+        { src: img("year1_img2"), caption: CAPTIONS.year1_img2 },
+        { src: img("year1_img3"), caption: CAPTIONS.year1_img3 },
+      ] as YearImage[],
+      tags: ["Orientation", "New Friends", "First Exams"],
+      memories: [
+        "Walking into campus with zero clue and full excitement",
+        "Making lifelong friends over canteen chai ☕",
+        "Surviving the first internals with last-night magic",
+        "That one senior who scared us on Day 1 😂",
+      ],
+    },
+    {
+      year: "2nd Year",
+      period: "2023–2024",
+      emoji: "🎉",
+      color: "from-amber-500 to-orange-400",
+      glowColor: "shadow-amber-500/30",
+      images: [
+        { src: img("year2_img1"), caption: CAPTIONS.year2_img1 },
+        { src: img("year2_img2"), caption: CAPTIONS.year2_img2 },
+        { src: img("year2_img3"), caption: CAPTIONS.year2_img3 },
+      ] as YearImage[],
+      tags: ["Fests", "Late Nights", "First Crush"],
+      memories: [
+        "College fests where we danced like nobody watched 💃",
+        "Late-night study sessions that turned into gossip sessions",
+        "First crushes, first heartbreaks, first real friendships",
+        "Bunking lectures together became an art form 🎨",
+      ],
+    },
+    {
+      year: "3rd Year",
+      period: "2024–2025",
+      emoji: "🚀",
+      color: "from-violet-500 to-purple-400",
+      glowColor: "shadow-violet-500/30",
+      images: [
+        { src: img("year3_img1"), caption: CAPTIONS.year3_img1 },
+        { src: img("year3_img2"), caption: CAPTIONS.year3_img2 },
+        { src: img("year3_img3"), caption: CAPTIONS.year3_img3 },
+      ] as YearImage[],
+      tags: ["Internships", "Projects", "Growth"],
+      memories: [
+        "Internships that made us feel like real professionals",
+        "Group projects where one person did all the work 😅",
+        "Started figuring out what we actually want in life",
+        "Leadership roles that taught us more than any textbook",
+      ],
+    },
+    {
+      year: "Final Year",
+      period: "2025–2026",
+      emoji: "🎓",
+      color: "from-primary to-rose-400",
+      glowColor: "shadow-primary/30",
+      images: [
+        { src: img("year4_img1"), caption: CAPTIONS.year4_img1 },
+        { src: img("year4_img2"), caption: CAPTIONS.year4_img2 },
+        { src: img("year4_img3"), caption: CAPTIONS.year4_img3 },
+      ] as YearImage[],
+      tags: ["Placements", "Farewell", "Last Memories"],
+      memories: [
+        "Placement season — stress, success, and celebration 🎉",
+        "Last chai breaks knowing they won't last forever",
+        "Farewell photos with people we'll never forget",
+        "Promising to stay in touch… and meaning it this time ❤️",
+      ],
+    },
+  ];
+}
 
 function MiniCarousel({ images }: { images: YearImage[] }) {
   const [current, setCurrent] = useState(0);
@@ -130,7 +167,6 @@ function MiniCarousel({ images }: { images: YearImage[] }) {
 
       <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
 
-      {/* Caption */}
       <AnimatePresence mode="wait">
         <motion.span
           key={current}
@@ -144,7 +180,6 @@ function MiniCarousel({ images }: { images: YearImage[] }) {
         </motion.span>
       </AnimatePresence>
 
-      {/* Arrows */}
       <button
         onClick={(e) => { e.stopPropagation(); prev(); }}
         className="absolute left-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
@@ -158,7 +193,6 @@ function MiniCarousel({ images }: { images: YearImage[] }) {
         <ChevronRight className="w-3.5 h-3.5 text-foreground" />
       </button>
 
-      {/* Dots */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-1.5">
         {images.map((_, idx) => (
           <button
@@ -175,6 +209,9 @@ function MiniCarousel({ images }: { images: YearImage[] }) {
 }
 
 export function JourneyTimeline() {
+  const { content } = useSiteContent();
+  const years = buildYears(content);
+
   return (
     <section id="timeline" className="py-12 sm:py-20 lg:py-28 bg-card relative overflow-hidden">
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
@@ -240,7 +277,6 @@ export function JourneyTimeline() {
                 >
                   <MiniCarousel images={item.images} />
 
-                  {/* Year info overlay */}
                   <div className="px-5 -mt-8 relative z-10">
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       {item.period}
