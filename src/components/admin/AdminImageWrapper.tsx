@@ -25,13 +25,14 @@ export function AdminImageWrapper({
   children,
   className = "",
 }: AdminImageWrapperProps) {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin: supabaseAdmin } = useAuth();
+  const { isAdmin: frontendAdmin } = useFrontendAdmin();
   const { content, updateContent } = useSiteContent();
   const [loading, setLoading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const currentUrl = content[contentKey] || null;
-  const showControls = !!user && isAdmin;
+  const showControls = (!!user && supabaseAdmin) || frontendAdmin;
 
   const handleFile = useCallback(
     async (file: File) => {
