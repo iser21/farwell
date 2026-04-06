@@ -130,7 +130,7 @@ export function BatchAwards() {
         >
           <div className="inline-flex items-center gap-2 mb-4">
             <Trophy className="w-8 h-8 text-primary" />
-            <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground tracking-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight">
               Batch Awards
             </h2>
             <Trophy className="w-8 h-8 text-primary" />

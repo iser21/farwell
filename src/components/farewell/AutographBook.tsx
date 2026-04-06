@@ -196,7 +196,7 @@ export function AutographBook() {
         {/* Form */}
         <motion.form
           onSubmit={handlePreview}
-          className="relative bg-background rounded-2xl p-6 sm:p-8 shadow-sm border border-border/50 mb-10 space-y-5"
+          className="relative bg-background rounded-2xl p-4 sm:p-6 md:p-8 shadow-sm border border-border/50 mb-8 sm:mb-10 space-y-4 sm:space-y-5"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}

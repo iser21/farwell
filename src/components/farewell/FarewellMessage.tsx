@@ -62,7 +62,7 @@ export function FarewellMessage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                <h2 className="text-3xl sm:text-4xl font-display font-bold mb-4 text-primary-foreground tracking-tight">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold mb-4 text-primary-foreground tracking-tight">
                   Until We Meet Again
                 </h2>
                 <p className="text-primary-foreground/70 text-lg mb-6 max-w-lg mx-auto text-balance leading-relaxed">
