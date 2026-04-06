@@ -42,7 +42,7 @@ export function LegendsSection() {
 
   return (
     <>
-      <section id="legends" className="py-20 lg:py-28 relative overflow-hidden">
+      <section id="legends" className="py-12 sm:py-20 lg:py-28 relative overflow-hidden">
         {/* Cork board background */}
         <div className="absolute inset-0 bg-gradient-to-b from-[hsl(30,30%,25%)] to-[hsl(30,25%,18%)] dark:from-[hsl(240,20%,10%)] dark:to-[hsl(240,25%,6%)]" />
         <div
