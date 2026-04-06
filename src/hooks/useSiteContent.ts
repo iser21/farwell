@@ -1,8 +1,19 @@
-import { useState, useEffect } from "react";
-import { getAllSiteContent } from "@/lib/imageStorage";
+import { useState, useEffect, useCallback, createContext, useContext } from "react";
+import { getAllSiteContent, upsertSiteContent as dbUpsert } from "@/lib/imageStorage";
 
-/** Fetches all site_content rows once and returns a key→url map */
-export function useSiteContent() {
+interface SiteContentContextType {
+  content: Record<string, string>;
+  loading: boolean;
+  updateContent: (key: string, url: string | null) => void;
+}
+
+const SiteContentContext = createContext<SiteContentContextType>({
+  content: {},
+  loading: true,
+  updateContent: () => {},
+});
+
+export function SiteContentProvider({ children }: { children: React.ReactNode }) {
   const [content, setContent] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
 
@@ -13,5 +24,22 @@ export function useSiteContent() {
       .finally(() => setLoading(false));
   }, []);
 
-  return { content, loading };
+  const updateContent = useCallback((key: string, url: string | null) => {
+    setContent((prev) => {
+      const next = { ...prev };
+      if (url) next[key] = url;
+      else delete next[key];
+      return next;
+    });
+  }, []);
+
+  return (
+    <SiteContentContext.Provider value={{ content, loading, updateContent }}>
+      {children}
+    </SiteContentContext.Provider>
+  );
+}
+
+export function useSiteContent() {
+  return useContext(SiteContentContext);
 }
