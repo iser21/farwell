@@ -30,7 +30,7 @@ export function FarewellMessage() {
             </motion.div>
           </div>
 
-          <div className="bg-foreground rounded-[2rem] relative overflow-hidden px-6 pt-20 pb-16 lg:px-10 lg:pt-24 lg:pb-20">
+          <div className="bg-foreground rounded-2xl sm:rounded-[2rem] relative overflow-hidden px-4 sm:px-6 pt-16 sm:pt-20 pb-12 sm:pb-16 lg:px-10 lg:pt-24 lg:pb-20">
             {/* Confetti pieces */}
             <div className="absolute inset-x-0 top-5 flex justify-center pointer-events-none">
               {CONFETTI_PIECES.map((p, i) => (
