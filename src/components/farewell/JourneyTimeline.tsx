@@ -229,7 +229,7 @@ export function JourneyTimeline() {
               </div>
 
               <div
-                className={`ml-20 md:ml-0 md:w-[calc(50%-44px)] ${
+                className={`sm:ml-16 md:ml-0 md:w-[calc(50%-44px)] ${
                   i % 2 === 0 ? "md:pr-4" : "md:pl-4"
                 }`}
               >
