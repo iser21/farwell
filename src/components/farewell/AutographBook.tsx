@@ -175,8 +175,8 @@ export function AutographBook() {
   const categoryMeta = CATEGORIES.find((c) => c.value === category)!;
 
   return (
-    <section id="autographs" className="py-20 lg:py-28 bg-card">
-      <div className="max-w-4xl mx-auto px-6 lg:px-8">
+    <section id="autographs" className="py-12 sm:py-20 lg:py-28 bg-card">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
           className="text-center mb-12"
