@@ -65,7 +65,6 @@ function ConfessionCard({
   onDelete: (id: string) => void;
 }) {
   const avatar = getAnonAvatar(c.id);
-  const anonNum = getAnonNumber(c.id, allIds);
   const catInfo = CATEGORIES.find((cat) => cat.value === c.category);
   const myReactions = userReactions[c.id] || [];
 
