@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { legends } from "@/components/farewell/legendsData";
@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Loader } from "@/components/Loader";
 import { ImageUploadCard } from "@/components/admin/ImageUploadCard";
-import { getAllSiteContent } from "@/lib/imageStorage";
-import { toast } from "sonner";
+import { useSiteContent } from "@/hooks/useSiteContent";
 import { Shield, ArrowLeft, LogOut, Image } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
