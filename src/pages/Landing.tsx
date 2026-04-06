@@ -61,6 +61,7 @@ const Landing = () => {
       <LegendsSection />
       <AutographBook />
       <ConfessionsSection />
+      <BatchAwards />
       <FarewellMessage />
 
       {/* Footer */}
