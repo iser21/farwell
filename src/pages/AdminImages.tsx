@@ -35,8 +35,7 @@ const PROFILE_KEYS = legends.map((l) => ({
 const AdminImages = () => {
   const { user, isAdmin, loading, signOut } = useAuth();
   const navigate = useNavigate();
-  const [content, setContent] = useState<Record<string, string>>({});
-  const [loadingData, setLoadingData] = useState(true);
+  const { content, loading: loadingData, updateContent } = useSiteContent();
 
   useEffect(() => {
     if (!loading && (!user || !isAdmin)) {
@@ -44,22 +43,8 @@ const AdminImages = () => {
     }
   }, [user, isAdmin, loading, navigate]);
 
-  useEffect(() => {
-    if (user && isAdmin) {
-      getAllSiteContent()
-        .then(setContent)
-        .catch(() => toast.error("Failed to load content"))
-        .finally(() => setLoadingData(false));
-    }
-  }, [user, isAdmin]);
-
   const handleUpdate = (key: string, url: string | null) => {
-    setContent((prev) => {
-      const next = { ...prev };
-      if (url) next[key] = url;
-      else delete next[key];
-      return next;
-    });
+    updateContent(key, url);
   };
 
   if (loading) return <Loader />;
