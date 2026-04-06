@@ -5,6 +5,7 @@ import { JourneyTimeline } from "@/components/farewell/JourneyTimeline";
 import { LegendsSection } from "@/components/farewell/LegendsSection";
 import { AutographBook } from "@/components/farewell/AutographBook";
 import { ConfessionsSection } from "@/components/farewell/ConfessionsSection";
+import { BatchAwards } from "@/components/farewell/BatchAwards";
 import { FarewellMessage } from "@/components/farewell/FarewellMessage";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Heart } from "lucide-react";
@@ -15,6 +16,7 @@ const navLinks = [
   { label: "Legends", href: "#legends" },
   { label: "Autographs", href: "#autographs" },
   { label: "Confessions", href: "#confessions" },
+  { label: "Awards", href: "#awards" },
 ];
 
 const Landing = () => {
@@ -59,6 +61,7 @@ const Landing = () => {
       <LegendsSection />
       <AutographBook />
       <ConfessionsSection />
+      <BatchAwards />
       <FarewellMessage />
 
       {/* Footer */}
