@@ -20,7 +20,7 @@ export const LegendCard = memo(function LegendCard({ legend, index, isHighlighte
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.04 }}
-      style={{ marginTop: yOffset }}
+    style={{ marginTop: typeof window !== "undefined" && window.innerWidth < 640 ? 0 : yOffset }}
     >
       <motion.button
         onClick={() => onClick(legend)}
