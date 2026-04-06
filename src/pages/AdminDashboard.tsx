@@ -111,6 +111,9 @@ const AdminDashboard = () => {
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <Button variant="ghost" size="sm" asChild>
+              <Link to="/admin/images"><Image className="w-4 h-4 mr-1" /> Images</Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
               <Link to="/"><ArrowLeft className="w-4 h-4 mr-1" /> Site</Link>
             </Button>
             <Button variant="outline" size="sm" onClick={handleSignOut}>
