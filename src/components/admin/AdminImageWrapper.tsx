@@ -36,8 +36,8 @@ export function AdminImageWrapper({
 
   const handleFile = useCallback(
     async (file: File) => {
-      if (!user || !supabaseAdmin) {
-        toast.error("Please log in at /admin to upload images");
+      if (!showControls) {
+        toast.error("Admin access required");
         return;
       }
       const error = validateImageFile(file);
