@@ -6,55 +6,83 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { PenLine, Heart } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AutographEntry {
   id: string;
   name: string;
   message: string;
-  timestamp: number;
-}
-
-const STORAGE_KEY = "farewell-autographs";
-
-function getEntries(): AutographEntry[] {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-  } catch {
-    return [];
-  }
+  created_at: string;
 }
 
 export function AutographBook() {
   const [entries, setEntries] = useState<AutographEntry[]>([]);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [lastSubmit, setLastSubmit] = useState(0);
+
+  const fetchEntries = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("autograph_messages")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (!error && data) setEntries(data);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    setEntries(getEntries());
+    fetchEntries();
+
+    // Realtime subscription
+    const channel = supabase
+      .channel("autographs-realtime")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "autograph_messages" }, (payload) => {
+        setEntries((prev) => [payload.new as AutographEntry, ...prev]);
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedName = name.trim();
     const trimmedMessage = message.trim();
     if (!trimmedName || !trimmedMessage) return;
+
+    // Rate limiting: 10 seconds between submissions
+    if (Date.now() - lastSubmit < 10000) {
+      toast.error("Please wait a few seconds before submitting again");
+      return;
+    }
+
+    if (trimmedName.length > 100) {
+      toast.error("Name must be under 100 characters");
+      return;
+    }
     if (trimmedMessage.length > 300) {
       toast.error("Message must be under 300 characters");
       return;
     }
 
-    const entry: AutographEntry = {
-      id: crypto.randomUUID(),
+    setSubmitting(true);
+    const { error } = await supabase.from("autograph_messages").insert({
       name: trimmedName.slice(0, 100),
       message: trimmedMessage.slice(0, 300),
-      timestamp: Date.now(),
-    };
-    const updated = [entry, ...entries];
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    setEntries(updated);
-    setName("");
-    setMessage("");
-    toast.success("Autograph added! 🖊️");
+    });
+    setSubmitting(false);
+
+    if (error) {
+      toast.error("Failed to submit — please try again");
+    } else {
+      setLastSubmit(Date.now());
+      setName("");
+      setMessage("");
+      toast.success("Autograph added! 🖊️");
+    }
   };
 
   return (
@@ -109,37 +137,45 @@ export function AutographBook() {
             />
             <p className="text-xs text-muted-foreground text-right">{message.length}/300</p>
           </div>
-          <Button type="submit" className="w-full sm:w-auto">
-            <PenLine className="w-4 h-4 mr-2" /> Sign the Book
+          <Button type="submit" className="w-full sm:w-auto" disabled={submitting}>
+            <PenLine className="w-4 h-4 mr-2" /> {submitting ? "Signing…" : "Sign the Book"}
           </Button>
         </motion.form>
 
         {/* Entries */}
-        {entries.length > 0 && (
+        {loading ? (
+          <div className="text-center py-8">
+            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
+          </div>
+        ) : entries.length > 0 ? (
           <div className="space-y-4">
             {entries.map((entry, i) => (
               <motion.div
                 key={entry.id}
                 className="bg-background rounded-2xl p-5 shadow-sm"
                 initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.03 }}
               >
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                     <Heart className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="font-display font-semibold text-sm text-foreground">{entry.name}</p>
+                    <div className="flex items-baseline gap-2">
+                      <p className="font-display font-semibold text-sm text-foreground">{entry.name}</p>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(entry.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
                     <p className="text-muted-foreground text-sm leading-relaxed mt-1">{entry.message}</p>
                   </div>
                 </div>
               </motion.div>
             ))}
           </div>
-        )}
-
-        {entries.length === 0 && (
+        ) : (
           <p className="text-center text-muted-foreground text-sm">
             No autographs yet — be the first to sign! 🌟
           </p>

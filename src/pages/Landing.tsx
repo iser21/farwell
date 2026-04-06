@@ -6,7 +6,9 @@ import { LegendsSection } from "@/components/farewell/LegendsSection";
 import { AutographBook } from "@/components/farewell/AutographBook";
 import { ConfessionsSection } from "@/components/farewell/ConfessionsSection";
 import { FarewellMessage } from "@/components/farewell/FarewellMessage";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Heart } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const navLinks = [
   { label: "Journey", href: "#timeline" },
@@ -42,11 +44,12 @@ const Landing = () => {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-full hover:bg-muted"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-full hover:bg-muted hidden sm:inline-flex"
               >
                 {link.label}
               </a>
             ))}
+            <ThemeToggle />
           </div>
         </div>
       </motion.nav>
@@ -66,7 +69,12 @@ const Landing = () => {
             <Heart className="w-4 h-4 text-primary fill-primary" />
             <span>by Batch 2022–2026</span>
           </div>
-          <p className="text-xs text-muted-foreground">© 2026 Our Journey. All memories reserved.</p>
+          <div className="flex items-center gap-4">
+            <p className="text-xs text-muted-foreground">© 2026 Our Journey. All memories reserved.</p>
+            <Link to="/admin" className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors">
+              Admin
+            </Link>
+          </div>
         </div>
       </footer>
     </div>
