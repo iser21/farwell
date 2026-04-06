@@ -20,14 +20,14 @@ export const LegendCard = memo(function LegendCard({ legend, index, isHighlighte
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.04 }}
-      style={{ marginTop: yOffset }}
+    style={{ marginTop: typeof window !== "undefined" && window.innerWidth < 640 ? 0 : yOffset }}
     >
       <motion.button
         onClick={() => onClick(legend)}
         className={`group relative cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm transition-shadow duration-300 ${
           isHighlighted ? "ring-4 ring-primary ring-offset-2 ring-offset-background" : ""
         }`}
-        style={{ rotate: `${rotation}deg` }}
+        style={{ rotate: typeof window !== "undefined" && window.innerWidth < 640 ? "0deg" : `${rotation}deg` }}
         whileHover={{ scale: 1.08, rotate: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >

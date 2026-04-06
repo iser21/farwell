@@ -116,11 +116,11 @@ export function BatchAwards() {
   );
 
   return (
-    <section id="awards" className="py-20 lg:py-28 bg-card relative overflow-hidden">
+    <section id="awards" className="py-12 sm:py-20 lg:py-28 bg-card relative overflow-hidden">
       <div className="absolute top-20 right-0 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute bottom-20 left-0 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
 
-      <div className="max-w-5xl mx-auto px-6 lg:px-8 relative">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <motion.div
           className="text-center mb-14"
           initial={{ opacity: 0, y: 24 }}
@@ -130,7 +130,7 @@ export function BatchAwards() {
         >
           <div className="inline-flex items-center gap-2 mb-4">
             <Trophy className="w-8 h-8 text-primary" />
-            <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground tracking-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight">
               Batch Awards
             </h2>
             <Trophy className="w-8 h-8 text-primary" />

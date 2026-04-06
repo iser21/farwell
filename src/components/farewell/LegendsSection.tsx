@@ -42,7 +42,7 @@ export function LegendsSection() {
 
   return (
     <>
-      <section id="legends" className="py-20 lg:py-28 relative overflow-hidden">
+      <section id="legends" className="py-12 sm:py-20 lg:py-28 relative overflow-hidden">
         {/* Cork board background */}
         <div className="absolute inset-0 bg-gradient-to-b from-[hsl(30,30%,25%)] to-[hsl(30,25%,18%)] dark:from-[hsl(240,20%,10%)] dark:to-[hsl(240,25%,6%)]" />
         <div
@@ -52,7 +52,7 @@ export function LegendsSection() {
           }}
         />
 
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <motion.div
             className="text-center mb-10"
@@ -61,7 +61,7 @@ export function LegendsSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl sm:text-4xl font-display font-bold text-primary-foreground dark:text-foreground tracking-tight mb-3">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-primary-foreground dark:text-foreground tracking-tight mb-3">
               The Legends Wall 🏆
             </h2>
             <p className="text-primary-foreground/70 dark:text-muted-foreground text-lg mb-6">
@@ -126,7 +126,7 @@ export function LegendsSection() {
           </div>
 
           {/* Cards Grid with slide animation */}
-          <div className="relative min-h-[500px]">
+          <div className="relative min-h-[300px] sm:min-h-[500px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentWall}
@@ -134,7 +134,7 @@ export function LegendsSection() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -60 }}
                 transition={{ duration: 0.35, ease: "easeInOut" }}
-                className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-5 lg:gap-7"
+                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5 lg:gap-7"
               >
                 {currentStudents.map((legend, i) => (
                   <LegendCard

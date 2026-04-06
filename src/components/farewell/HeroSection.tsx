@@ -20,7 +20,7 @@ export function HeroSection() {
 
       {/* Content */}
       <motion.div
-        className="relative z-10 text-center px-6 max-w-3xl mx-auto"
+        className="relative z-10 text-center px-4 sm:px-6 max-w-3xl mx-auto"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -33,7 +33,7 @@ export function HeroSection() {
         >
           Class of 2026
         </motion.p>
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl 2xl:text-7xl font-display font-bold text-primary-foreground tracking-tight leading-[1.1] mb-6">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl 2xl:text-7xl font-display font-bold text-primary-foreground tracking-tight leading-[1.1] mb-6">
           Our Journey
           <br />
           <span className="text-primary">Batch 2022–2026</span>

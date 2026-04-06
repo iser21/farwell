@@ -176,11 +176,11 @@ function MiniCarousel({ images }: { images: YearImage[] }) {
 
 export function JourneyTimeline() {
   return (
-    <section id="timeline" className="py-20 lg:py-28 bg-card relative overflow-hidden">
+    <section id="timeline" className="py-12 sm:py-20 lg:py-28 bg-card relative overflow-hidden">
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
 
-      <div className="max-w-5xl mx-auto px-6 lg:px-8 relative">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 24 }}
@@ -188,7 +188,7 @@ export function JourneyTimeline() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground tracking-tight mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight mb-4">
             The Journey
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
@@ -197,7 +197,7 @@ export function JourneyTimeline() {
         </motion.div>
 
         <div className="relative">
-          <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-0.5 md:-translate-x-px">
+          <div className="absolute left-4 sm:left-6 md:left-1/2 top-0 bottom-0 w-0.5 md:-translate-x-px hidden sm:block">
             <div className="w-full h-full bg-gradient-to-b from-emerald-500/60 via-amber-500/60 via-violet-500/60 to-primary/60 rounded-full" />
           </div>
 
@@ -212,7 +212,7 @@ export function JourneyTimeline() {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: i * 0.15 }}
             >
-              <div className="absolute left-6 md:left-1/2 -translate-x-1/2 z-10">
+              <div className="absolute left-4 sm:left-6 md:left-1/2 -translate-x-1/2 z-10 hidden sm:flex">
                 <motion.div
                   className={`w-14 h-14 rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center text-2xl shadow-lg ${item.glowColor}`}
                   whileInView={{
@@ -229,7 +229,7 @@ export function JourneyTimeline() {
               </div>
 
               <div
-                className={`ml-20 md:ml-0 md:w-[calc(50%-44px)] ${
+                className={`sm:ml-16 md:ml-0 md:w-[calc(50%-44px)] ${
                   i % 2 === 0 ? "md:pr-4" : "md:pl-4"
                 }`}
               >

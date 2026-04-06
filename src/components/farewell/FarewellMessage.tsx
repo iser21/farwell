@@ -14,8 +14,8 @@ const CONFETTI_PIECES = [
 
 export function FarewellMessage() {
   return (
-    <section className="pt-10 lg:pt-16 pb-20 lg:pb-28 relative">
-      <div className="max-w-4xl mx-auto px-6 lg:px-8">
+    <section className="pt-8 sm:pt-10 lg:pt-16 pb-12 sm:pb-20 lg:pb-28 relative">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative pt-16 lg:pt-20">
           {/* Floating heart icon */}
           <div className="absolute inset-x-0 top-0 z-20 flex justify-center pointer-events-none">
@@ -30,7 +30,7 @@ export function FarewellMessage() {
             </motion.div>
           </div>
 
-          <div className="bg-foreground rounded-[2rem] relative overflow-hidden px-6 pt-20 pb-16 lg:px-10 lg:pt-24 lg:pb-20">
+          <div className="bg-foreground rounded-2xl sm:rounded-[2rem] relative overflow-hidden px-4 sm:px-6 pt-16 sm:pt-20 pb-12 sm:pb-16 lg:px-10 lg:pt-24 lg:pb-20">
             {/* Confetti pieces */}
             <div className="absolute inset-x-0 top-5 flex justify-center pointer-events-none">
               {CONFETTI_PIECES.map((p, i) => (
@@ -62,7 +62,7 @@ export function FarewellMessage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                <h2 className="text-3xl sm:text-4xl font-display font-bold mb-4 text-primary-foreground tracking-tight">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold mb-4 text-primary-foreground tracking-tight">
                   Until We Meet Again
                 </h2>
                 <p className="text-primary-foreground/70 text-lg mb-6 max-w-lg mx-auto text-balance leading-relaxed">

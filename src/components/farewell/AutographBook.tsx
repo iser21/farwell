@@ -175,8 +175,8 @@ export function AutographBook() {
   const categoryMeta = CATEGORIES.find((c) => c.value === category)!;
 
   return (
-    <section id="autographs" className="py-20 lg:py-28 bg-card">
-      <div className="max-w-4xl mx-auto px-6 lg:px-8">
+    <section id="autographs" className="py-12 sm:py-20 lg:py-28 bg-card">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
           className="text-center mb-12"
@@ -185,7 +185,7 @@ export function AutographBook() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground tracking-tight mb-3">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight mb-3">
             Digital Autograph Book ✍️
           </h2>
           <p className="text-muted-foreground text-lg">
@@ -196,7 +196,7 @@ export function AutographBook() {
         {/* Form */}
         <motion.form
           onSubmit={handlePreview}
-          className="relative bg-background rounded-2xl p-6 sm:p-8 shadow-sm border border-border/50 mb-10 space-y-5"
+          className="relative bg-background rounded-2xl p-4 sm:p-6 md:p-8 shadow-sm border border-border/50 mb-8 sm:mb-10 space-y-4 sm:space-y-5"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}

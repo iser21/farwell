@@ -12,10 +12,11 @@ import {
   DialogFooter,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { MessageCircleHeart, Eye, Send } from "lucide-react";
+import { MessageCircleHeart, Eye, Send, Check, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { containsBannedWords } from "@/lib/wordFilter";
+import { useFrontendAdmin } from "@/contexts/FrontendAdminContext";
 
 interface Confession {
   id: string;
@@ -57,7 +58,9 @@ function getAnonNumber(id: string, allIds: string[]) {
 const MAX_LENGTH = 300;
 
 export function ConfessionsSection() {
+  const { isAdmin } = useFrontendAdmin();
   const [confessions, setConfessions] = useState<Confession[]>([]);
+  const [pendingConfessions, setPendingConfessions] = useState<Confession[]>([]);
   const [message, setMessage] = useState("");
   const [category, setCategory] = useState("secret");
   const [loading, setLoading] = useState(false);
@@ -85,16 +88,42 @@ export function ConfessionsSection() {
     setLoading(false);
   };
 
+  const fetchPending = async () => {
+    const { data, error } = await supabase
+      .from("confessions")
+      .select("*")
+      .eq("status", "pending")
+      .order("created_at", { ascending: false });
+    if (!error && data) setPendingConfessions(data as Confession[]);
+  };
+
   useEffect(() => {
     fetchApproved();
     const channel = supabase
       .channel("confessions-public")
       .on("postgres_changes", { event: "*", schema: "public", table: "confessions" }, () => {
         fetchApproved();
+        if (isAdmin) fetchPending();
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, []);
+  }, [isAdmin]);
+
+  useEffect(() => {
+    if (isAdmin) fetchPending();
+  }, [isAdmin]);
+
+  const handleApprove = async (id: string) => {
+    const { error } = await supabase.from("confessions").update({ status: "approved" }).eq("id", id);
+    if (error) toast.error("Failed to approve");
+    else toast.success("Confession approved ✅");
+  };
+
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase.from("confessions").delete().eq("id", id);
+    if (error) toast.error("Failed to delete");
+    else toast.success("Confession deleted");
+  };
 
   const handlePreview = (e: React.FormEvent) => {
     e.preventDefault();
@@ -141,7 +170,6 @@ export function ConfessionsSection() {
     const alreadyReacted = existing.includes(type);
     const col = `reactions_${type}` as const;
 
-    // Optimistic update
     setConfessions((prev) =>
       prev.map((c) =>
         c.id === confessionId
@@ -168,19 +196,19 @@ export function ConfessionsSection() {
   const selectedCategory = CATEGORIES.find((c) => c.value === category);
 
   return (
-    <section id="confessions" className="py-20 lg:py-28">
-      <div className="max-w-4xl mx-auto px-6 lg:px-8">
+    <section id="confessions" className="py-12 sm:py-20 lg:py-28">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          className="text-center mb-12"
+          className="text-center mb-8 sm:mb-12"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground tracking-tight mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight mb-4">
             Confessions 🤫
           </h2>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-base sm:text-lg">
             Say what you never could — anonymously
           </p>
         </motion.div>
@@ -188,7 +216,7 @@ export function ConfessionsSection() {
         {/* Submit form */}
         <motion.form
           onSubmit={handlePreview}
-          className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl p-6 shadow-lg mb-10 space-y-5"
+          className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl p-4 sm:p-6 shadow-lg mb-8 sm:mb-10 space-y-4 sm:space-y-5"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -215,7 +243,6 @@ export function ConfessionsSection() {
             </p>
           </div>
 
-          {/* Category selection */}
           <div className="space-y-2">
             <Label className="text-sm font-medium">Category</Label>
             <div className="flex flex-wrap gap-2">
@@ -263,9 +290,7 @@ export function ConfessionsSection() {
               </p>
             </div>
             <DialogFooter className="gap-2">
-              <Button variant="outline" onClick={() => setShowPreview(false)}>
-                Edit
-              </Button>
+              <Button variant="outline" onClick={() => setShowPreview(false)}>Edit</Button>
               <Button onClick={handleSubmit} disabled={submitting}>
                 <Send className="w-4 h-4 mr-2" /> {submitting ? "Submitting…" : "Submit"}
               </Button>
@@ -273,13 +298,43 @@ export function ConfessionsSection() {
           </DialogContent>
         </Dialog>
 
+        {/* Admin: Pending confessions */}
+        {isAdmin && pendingConfessions.length > 0 && (
+          <div className="mb-8 sm:mb-10">
+            <h3 className="font-display font-semibold text-foreground mb-4 flex items-center gap-2">
+              <MessageCircleHeart className="w-5 h-5 text-primary" />
+              Pending Moderation ({pendingConfessions.length})
+            </h3>
+            <div className="space-y-3">
+              {pendingConfessions.map((c) => (
+                <div key={c.id} className="bg-warning/5 border border-warning/20 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-foreground italic">"{c.message}"</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {new Date(c.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="flex gap-2 shrink-0">
+                    <Button size="sm" variant="outline" onClick={() => handleApprove(c.id)} className="gap-1">
+                      <Check className="w-3.5 h-3.5" /> Approve
+                    </Button>
+                    <Button size="sm" variant="destructive" onClick={() => handleDelete(c.id)} className="gap-1">
+                      <Trash2 className="w-3.5 h-3.5" /> Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Confessions list */}
         {loading ? (
           <div className="text-center py-8">
             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
           </div>
         ) : confessions.length > 0 ? (
-          <div className="columns-1 sm:columns-2 gap-4 space-y-4">
+          <div className="columns-1 sm:columns-2 gap-3 sm:gap-4 space-y-3 sm:space-y-4">
             <AnimatePresence>
               {confessions.map((c, i) => {
                 const avatar = getAnonAvatar(c.id);
@@ -290,32 +345,31 @@ export function ConfessionsSection() {
                 return (
                   <motion.div
                     key={c.id}
-                    className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl p-5 shadow-sm break-inside-avoid hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+                    className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl p-4 sm:p-5 shadow-sm break-inside-avoid hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
                     initial={{ opacity: 0, y: 16 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.04 }}
                   >
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="text-2xl">{avatar}</span>
+                      <span className="text-xl sm:text-2xl">{avatar}</span>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-foreground">
+                        <p className="text-xs sm:text-sm font-semibold text-foreground">
                           Anonymous #{anonNum}
                         </p>
                         {catInfo && (
-                          <Badge variant="outline" className={`text-xs mt-0.5 ${CATEGORY_COLORS[c.category] || ""}`}>
+                          <Badge variant="outline" className={`text-[10px] mt-0.5 ${CATEGORY_COLORS[c.category] || ""}`}>
                             {catInfo.emoji} {catInfo.label}
                           </Badge>
                         )}
                       </div>
                     </div>
 
-                    <p className="text-foreground text-sm leading-relaxed italic mb-4">
+                    <p className="text-foreground text-xs sm:text-sm leading-relaxed italic mb-3 sm:mb-4">
                       "{c.message}"
                     </p>
 
-                    {/* Reactions */}
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 flex-wrap">
                       {([
                         { type: "heart" as const, emoji: "❤️", count: c.reactions_heart },
                         { type: "laugh" as const, emoji: "😂", count: c.reactions_laugh },
@@ -324,7 +378,7 @@ export function ConfessionsSection() {
                         <button
                           key={r.type}
                           onClick={() => handleReaction(c.id, r.type)}
-                          className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all border ${
+                          className={`flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full text-xs font-medium transition-all border ${
                             myReactions.includes(r.type)
                               ? "bg-primary/10 border-primary/30 text-primary"
                               : "bg-muted/40 border-transparent text-muted-foreground hover:bg-muted"
@@ -334,6 +388,17 @@ export function ConfessionsSection() {
                           {r.count > 0 && <span>{r.count}</span>}
                         </button>
                       ))}
+
+                      {/* Admin delete for approved */}
+                      {isAdmin && (
+                        <button
+                          onClick={() => handleDelete(c.id)}
+                          className="ml-auto text-xs text-destructive/60 hover:text-destructive transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   </motion.div>
                 );
