@@ -26,13 +26,13 @@ export function AdminImageWrapper({
   className = "",
 }: AdminImageWrapperProps) {
   const { user, isAdmin: supabaseAdmin } = useAuth();
-  const { isAdmin: frontendAdmin } = useFrontendAdmin();
   const { content, updateContent } = useSiteContent();
   const [loading, setLoading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const currentUrl = content[contentKey] || null;
-  const showControls = (!!user && supabaseAdmin) || frontendAdmin;
+  // Only show controls for authenticated Supabase admins (not frontend-only admin)
+  const showControls = !!user && supabaseAdmin;
 
   const handleFile = useCallback(
     async (file: File) => {
