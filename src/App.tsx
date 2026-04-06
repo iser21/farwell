@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { FrontendAdminProvider } from "@/contexts/FrontendAdminContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { SiteContentProvider } from "@/hooks/useSiteContent";
 
 import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
