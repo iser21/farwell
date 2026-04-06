@@ -14,8 +14,8 @@ const CONFETTI_PIECES = [
 
 export function FarewellMessage() {
   return (
-    <section className="pt-10 lg:pt-16 pb-20 lg:pb-28 relative">
-      <div className="max-w-4xl mx-auto px-6 lg:px-8">
+    <section className="pt-8 sm:pt-10 lg:pt-16 pb-12 sm:pb-20 lg:pb-28 relative">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative pt-16 lg:pt-20">
           {/* Floating heart icon */}
           <div className="absolute inset-x-0 top-0 z-20 flex justify-center pointer-events-none">
