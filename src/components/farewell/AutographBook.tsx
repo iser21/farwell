@@ -185,7 +185,7 @@ export function AutographBook() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground tracking-tight mb-3">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight mb-3">
             Digital Autograph Book ✍️
           </h2>
           <p className="text-muted-foreground text-lg">
