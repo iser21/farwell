@@ -17,6 +17,7 @@ import { AdminRoute } from "./components/AdminRoute";
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="app-theme">
     <AuthProvider>
+      <SiteContentProvider>
       <FrontendAdminProvider>
         <TooltipProvider>
           <Toaster />
