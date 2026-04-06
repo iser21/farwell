@@ -126,7 +126,7 @@ export function LegendsSection() {
           </div>
 
           {/* Cards Grid with slide animation */}
-          <div className="relative min-h-[500px]">
+          <div className="relative min-h-[300px] sm:min-h-[500px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentWall}

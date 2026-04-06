@@ -27,7 +27,7 @@ export const LegendCard = memo(function LegendCard({ legend, index, isHighlighte
         className={`group relative cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm transition-shadow duration-300 ${
           isHighlighted ? "ring-4 ring-primary ring-offset-2 ring-offset-background" : ""
         }`}
-        style={{ rotate: `${rotation}deg` }}
+        style={{ rotate: typeof window !== "undefined" && window.innerWidth < 640 ? "0deg" : `${rotation}deg` }}
         whileHover={{ scale: 1.08, rotate: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
