@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Upload, Trash2, RefreshCw, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -28,23 +28,42 @@ export function ImageUploadCard({
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [imgError, setImgError] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const pendingFile = useRef<File | null>(null);
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  const selectFile = useCallback((file: File) => {
     const error = validateImageFile(file);
     if (error) {
       toast.error(error);
       return;
     }
-
     pendingFile.current = file;
     setPreview(URL.createObjectURL(file));
     setImgError(false);
+  }, []);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) selectFile(file);
   };
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setDragOver(false);
+      const file = e.dataTransfer.files?.[0];
+      if (file) selectFile(file);
+    },
+    [selectFile]
+  );
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(true);
+  }, []);
+
+  const handleDragLeave = useCallback(() => setDragOver(false), []);
 
   const handleUpload = async () => {
     const file = pendingFile.current;
@@ -52,18 +71,12 @@ export function ImageUploadCard({
 
     setLoading(true);
     try {
-      // Delete old image if replacing
       if (currentUrl) {
         const oldPath = extractStoragePath(currentUrl);
         if (oldPath) {
-          try {
-            await deleteImageFromStorage(oldPath);
-          } catch {
-            // Old file may already be gone
-          }
+          try { await deleteImageFromStorage(oldPath); } catch { /* ok */ }
         }
       }
-
       const { url } = await uploadImage(file, folder);
       await upsertSiteContent(contentKey, url);
       onUpdate(contentKey, url);
@@ -85,11 +98,7 @@ export function ImageUploadCard({
     try {
       const path = extractStoragePath(currentUrl);
       if (path) {
-        try {
-          await deleteImageFromStorage(path);
-        } catch {
-          // May already be gone
-        }
+        try { await deleteImageFromStorage(path); } catch { /* ok */ }
       }
       await upsertSiteContent(contentKey, null);
       onUpdate(contentKey, null);
@@ -111,10 +120,22 @@ export function ImageUploadCard({
 
   return (
     <div className="bg-card border border-border rounded-xl p-4 space-y-3">
-      <p className="text-sm font-medium text-foreground">{label}</p>
+      <p className="text-sm font-medium text-foreground truncate" title={label}>
+        {label}
+      </p>
 
-      {/* Image preview */}
-      <div className="relative w-full h-36 rounded-lg bg-muted flex items-center justify-center overflow-hidden">
+      {/* Drag-and-drop image preview zone */}
+      <div
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onClick={() => !preview && fileRef.current?.click()}
+        className={`relative w-full h-36 rounded-lg flex items-center justify-center overflow-hidden cursor-pointer transition-all ${
+          dragOver
+            ? "bg-primary/10 border-2 border-dashed border-primary"
+            : "bg-muted border-2 border-dashed border-transparent"
+        }`}
+      >
         {displayUrl && !imgError ? (
           <img
             src={displayUrl}
@@ -123,12 +144,20 @@ export function ImageUploadCard({
             onError={() => setImgError(true)}
           />
         ) : (
-          <ImageIcon className="w-8 h-8 text-muted-foreground/40" />
+          <div className="flex flex-col items-center gap-1 text-muted-foreground/50">
+            <ImageIcon className="w-8 h-8" />
+            <span className="text-[10px]">Drop or click to upload</span>
+          </div>
         )}
         {preview && (
           <span className="absolute top-2 left-2 text-[10px] bg-primary text-primary-foreground px-2 py-0.5 rounded-full font-medium">
             Preview
           </span>
+        )}
+        {dragOver && (
+          <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+            <Upload className="w-6 h-6 text-primary" />
+          </div>
         )}
       </div>
 

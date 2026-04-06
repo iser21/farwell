@@ -28,9 +28,9 @@ const TIMELINE_KEYS = [
   { key: "year4_img3", label: "Final Year – Image 3" },
 ];
 
-const PROFILE_KEYS = Array.from({ length: 10 }, (_, i) => ({
-  key: `profile_img_${i + 1}`,
-  label: `Profile Image ${i + 1}`,
+const PROFILE_KEYS = legends.map((l) => ({
+  key: `profile_img_${l.id}`,
+  label: `#${l.id} – ${l.name}`,
 }));
 
 const AdminImages = () => {
