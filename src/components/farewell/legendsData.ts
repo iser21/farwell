@@ -130,10 +130,21 @@ function seededRandom(seed: number) {
   return x - Math.floor(x);
 }
 
+// Local legend photos – replace each PNG in src/assets/legends/ with the real photo
+const legendPhotos = Object.fromEntries(
+  Object.entries(
+    import.meta.glob("../../assets/legends/*.png", { eager: true, query: "?url", import: "default" })
+  ).map(([path, url]) => {
+    const num = parseInt(path.split("/").pop()!.split("-")[0]);
+    return [num, url as string];
+  })
+);
+
 export const legends: Legend[] = Array.from({ length: 71 }, (_, i) => {
   const id = i + 1;
-  const avatarThen = `https://i.pravatar.cc/400?img=${((i * 3) % 70) + 1}`;
-  const avatarNow = `https://i.pravatar.cc/400?img=${((i * 3 + 17) % 70) + 1}`;
+  const photo = legendPhotos[id] ?? `https://i.pravatar.cc/400?img=${((i * 3) % 70) + 1}`;
+  const avatarThen = photo;
+  const avatarNow = photo;
   const hasNotes = seededRandom(id * 13) > 0.5;
   const noteIndex1 = Math.floor(seededRandom(id * 19) * noteBank.length);
   const noteIndex2 = Math.floor(seededRandom(id * 23) * noteBank.length);
