@@ -465,7 +465,6 @@ export function ConfessionsSection() {
                   key={c.id}
                   c={c}
                   i={i}
-                  allIds={allIds}
                   isAdmin={isAdmin}
                   userReactions={userReactions}
                   onReaction={handleReaction}

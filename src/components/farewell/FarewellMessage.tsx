@@ -62,17 +62,17 @@ export function FarewellMessage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold mb-4 text-primary-foreground tracking-tight">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold mb-4 text-primary-foreground dark:text-[#f8fafc] tracking-tight">
                   Until We Meet Again
                 </h2>
-                <p className="text-primary-foreground/70 text-lg mb-6 max-w-lg mx-auto text-balance leading-relaxed">
+                <p className="text-primary-foreground/70 dark:text-[#cbd5e1] text-lg mb-6 max-w-lg mx-auto text-balance leading-relaxed">
                   Four years flew by in what felt like four days. We laughed, we cried, we grew.
                   No matter where life takes us, this batch will always be home.
                 </p>
-                <p className="text-primary-foreground/50 text-sm italic">
+                <p className="text-primary-foreground/50 dark:text-[#94a3b8] text-sm italic">
                   "Don't cry because it's over. Smile because it happened." 🌟
                 </p>
-                <div className="mt-8 flex items-center justify-center gap-2 text-primary-foreground/60 text-sm">
+                <div className="mt-8 flex items-center justify-center gap-2 text-primary-foreground/60 dark:text-[#94a3b8] text-sm">
                   <Heart className="w-4 h-4 text-primary fill-primary" />
                   <span>Batch 2022–2026 Forever</span>
                   <Heart className="w-4 h-4 text-primary fill-primary" />
