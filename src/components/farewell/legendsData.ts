@@ -24,19 +24,19 @@ export interface Legend {
 }
 
 const firstNames = [
-  "Arjun", "Priya", "Ravi", "Sneha", "Kabir", "Ananya", "Rohan", "Meera",
-  "Aarav", "Diya", "Vikram", "Isha", "Nikhil", "Pooja", "Siddharth", "Kavya",
-  "Aditya", "Nisha", "Rahul", "Tanvi", "Harsh", "Simran", "Kunal", "Riya",
-  "Manish", "Shruti", "Deepak", "Neha", "Amit", "Anjali", "Varun", "Swati",
-  "Kartik", "Divya", "Suresh", "Pallavi", "Mohit", "Komal", "Gaurav", "Preeti",
-  "Akash", "Sonal", "Tarun", "Bhavna", "Vivek", "Megha", "Rajesh", "Jyoti",
-  "Pranav", "Tanya", "Karan", "Sakshi", "Ashish", "Ritika", "Dev", "Nandini",
-  "Yash", "Aditi", "Sahil", "Kriti", "Ajay", "Madhuri", "Tushar", "Payal",
-  "Naveen", "Shweta", "Ishan", "Khushi", "Aniket", "Aisha", "Sameer"
+  "SARANYA", "HEMA SUNDHAR", "SURENDRA", "ANSHIKA", "DEEPIKA", "VENKATESH", "ADITYA", "SAHITHYA",
+  "MAHESHWAR", "MANIKANTA", "RAJASEKHAR", "SUSHMA", "HEMANTH", "HIMA SRI", "MOHAN RAO", "UDAY KIRAN",
+  "GOVARDHAN", "SANDEEP", "NIRMAL", "VANDHANA", "SANDEEP", "AMRUTHA VARSHINI", "JYOSTHSNA ADITYA", "YAMINI",
+  "HARIN", "MOHAN", "PAVAN", "KARTHIK", "ROHITH", "MADHU", "SRI CHARAN", "AKSHAYA",
+  "NANDINI","CHAITANYA", "SAI SANDEEP", "AKSHAYA", "ABHISHEK", "NITEEESH", "PRASANNA", "MANASA", "DILLESWAR",
+  "JAI SAI RAM", "NITHIN", "RESHMA", "ANISH", "DILEEP", "JAGADISH", "MANOHAR", "SAI PRAKASH",
+  "BHASKAR RAO", "VIGNAN", "VAMSI", "SANDEEP", "BHAVANI", "GOWTHAM", "HARISH DEVI PRASAD", "HIMA VARSHINI",
+  "RAJ KUMAR", "NAVYA", "SHANTHI", "MOURYA SRIKAR", "NITHIN", "LAVANYA", "DEVIKA", "TEJASH",
+  "MAHA LASKHMI", "JAGADEESH PRASHANTH", "RAVI SRNIVASU", "DILEEP", "JHANSI", "HEMA AJAY KUMAR", "Sameer"
 ];
 
-const lastNames = [
-  "Sharma", "Nair", "Kumar", "Desai", "Mehta", "Iyer", "Patel", "Joshi",
+/*const lastNames = [
+  "AKULA", "AMARAPINNI", "AMBALLA", "Desai", "Mehta", "Iyer", "Patel", "Joshi",
   "Gupta", "Reddy", "Singh", "Rao", "Verma", "Chatterjee", "Das", "Pillai",
   "Mishra", "Banerjee", "Tiwari", "Saxena", "Agarwal", "Kapoor", "Shah", "Roy",
   "Bose", "Sinha", "Chauhan", "Jain", "Yadav", "Malik", "Thakur", "Pandey",
@@ -45,7 +45,7 @@ const lastNames = [
   "Goswami", "Bhatt", "Mahajan", "Kaur", "Dhawan", "Bajaj", "Soni", "Trivedi",
   "Khanna", "Chopra", "Gill", "Grover", "Mukherjee", "Deshpande", "Mistry", "Shetty",
   "Rangan", "Khurana", "Luthra", "Kohli", "Prasad", "Mirza", "Kapadia"
-];
+];*/
 
 const descriptions = [
   "The class topper who secretly watched anime during lectures 🎌",
@@ -140,7 +140,7 @@ export const legends: Legend[] = Array.from({ length: 71 }, (_, i) => {
 
   return {
     id,
-    name: `${firstNames[i]} ${lastNames[i]}`,
+    name: `${firstNames[i]} `,
     thenPhoto: avatarThen,
     nowPhoto: avatarNow,
     thenCaption: thenCaptions[i % thenCaptions.length],
