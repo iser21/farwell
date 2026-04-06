@@ -52,9 +52,6 @@ function getAnonAvatar(id: string) {
   return ANON_AVATARS[Math.abs(hash) % ANON_AVATARS.length];
 }
 
-function getAnonNumber(id: string, allIds: string[]) {
-  return allIds.indexOf(id) + 1;
-}
 
 const MAX_LENGTH = 300;
 
