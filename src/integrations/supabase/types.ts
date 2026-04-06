@@ -43,21 +43,33 @@ export type Database = {
       }
       confessions: {
         Row: {
+          category: string
           created_at: string
           id: string
           message: string
+          reactions_heart: number
+          reactions_laugh: number
+          reactions_wow: number
           status: string
         }
         Insert: {
+          category?: string
           created_at?: string
           id?: string
           message: string
+          reactions_heart?: number
+          reactions_laugh?: number
+          reactions_wow?: number
           status?: string
         }
         Update: {
+          category?: string
           created_at?: string
           id?: string
           message?: string
+          reactions_heart?: number
+          reactions_laugh?: number
+          reactions_wow?: number
           status?: string
         }
         Relationships: []
