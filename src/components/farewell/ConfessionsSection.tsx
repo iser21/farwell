@@ -80,7 +80,7 @@ function ConfessionCard({
       <div className="flex items-center gap-3 mb-3">
         <span className="text-xl sm:text-2xl">{avatar}</span>
         <div className="flex-1 min-w-0">
-          <p className="text-xs sm:text-sm font-semibold text-foreground">Anonymous #{anonNum}</p>
+          <p className="text-xs sm:text-sm font-semibold text-foreground">Anonymous</p>
           {catInfo && (
             <Badge variant="outline" className={`text-[10px] mt-0.5 ${CATEGORY_COLORS[c.category] || ""}`}>
               {catInfo.emoji} {catInfo.label}
