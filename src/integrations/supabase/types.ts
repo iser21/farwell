@@ -16,20 +16,26 @@ export type Database = {
     Tables: {
       autograph_messages: {
         Row: {
+          category: string
           created_at: string
           id: string
+          likes: number
           message: string
           name: string
         }
         Insert: {
+          category?: string
           created_at?: string
           id?: string
+          likes?: number
           message: string
           name: string
         }
         Update: {
+          category?: string
           created_at?: string
           id?: string
+          likes?: number
           message?: string
           name?: string
         }
