@@ -52,23 +52,19 @@ function getAnonAvatar(id: string) {
   return ANON_AVATARS[Math.abs(hash) % ANON_AVATARS.length];
 }
 
-function getAnonNumber(id: string, allIds: string[]) {
-  return allIds.indexOf(id) + 1;
-}
 
 const MAX_LENGTH = 300;
 
 /* ── Confession Card (public) ── */
 function ConfessionCard({
-  c, i, allIds, isAdmin, userReactions, onReaction, onDelete,
+  c, i, isAdmin, userReactions, onReaction, onDelete,
 }: {
-  c: Confession; i: number; allIds: string[]; isAdmin: boolean;
+  c: Confession; i: number; isAdmin: boolean;
   userReactions: Record<string, string[]>;
   onReaction: (id: string, type: "heart" | "laugh" | "wow") => void;
   onDelete: (id: string) => void;
 }) {
   const avatar = getAnonAvatar(c.id);
-  const anonNum = getAnonNumber(c.id, allIds);
   const catInfo = CATEGORIES.find((cat) => cat.value === c.category);
   const myReactions = userReactions[c.id] || [];
 
@@ -83,7 +79,7 @@ function ConfessionCard({
       <div className="flex items-center gap-3 mb-3">
         <span className="text-xl sm:text-2xl">{avatar}</span>
         <div className="flex-1 min-w-0">
-          <p className="text-xs sm:text-sm font-semibold text-foreground">Anonymous #{anonNum}</p>
+          <p className="text-xs sm:text-sm font-semibold text-foreground">Anonymous</p>
           {catInfo && (
             <Badge variant="outline" className={`text-[10px] mt-0.5 ${CATEGORY_COLORS[c.category] || ""}`}>
               {catInfo.emoji} {catInfo.label}
@@ -246,7 +242,7 @@ export function ConfessionsSection() {
     }
   });
 
-  const allIds = useMemo(() => confessions.map((c) => c.id), [confessions]);
+  
 
   const fetchApproved = async () => {
     setLoading(true);
@@ -468,7 +464,6 @@ export function ConfessionsSection() {
                   key={c.id}
                   c={c}
                   i={i}
-                  allIds={allIds}
                   isAdmin={isAdmin}
                   userReactions={userReactions}
                   onReaction={handleReaction}
