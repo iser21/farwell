@@ -1,11 +1,14 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { FrontendAdminProvider } from "@/contexts/FrontendAdminContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SiteContentProvider } from "@/hooks/useSiteContent";
+
+const queryClient = new QueryClient();
 
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
@@ -16,6 +19,7 @@ import AdminImages from "./pages/AdminImages";
 import { AdminRoute } from "./components/AdminRoute";
 
 const App = () => (
+  <QueryClientProvider client={queryClient}>
   <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="app-theme">
     <AuthProvider>
       <SiteContentProvider>
@@ -52,6 +56,7 @@ const App = () => (
       </SiteContentProvider>
     </AuthProvider>
   </ThemeProvider>
+  </QueryClientProvider>
 );
 
 export default App;

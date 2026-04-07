@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import { legends } from "@/components/farewell/legendsData";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Loader } from "@/components/Loader";
 import { ImageUploadCard } from "@/components/admin/ImageUploadCard";
+import { ExcelUploadSection } from "@/components/admin/ExcelUploadSection";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { useStudents } from "@/hooks/useStudents";
 import { Shield, ArrowLeft, LogOut, Image } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -27,15 +28,16 @@ const TIMELINE_KEYS = [
   { key: "year4_img3", label: "Final Year – Image 3" },
 ];
 
-const PROFILE_KEYS = legends.map((l) => ({
-  key: `profile_img_${l.id}`,
-  label: `#${l.id} – ${l.name}`,
-}));
-
 const AdminImages = () => {
   const { user, isAdmin, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const { content, loading: loadingData, updateContent } = useSiteContent();
+  const { data: students = [] } = useStudents();
+
+  const PROFILE_KEYS = students.map((s, i) => ({
+    key: `profile_img_${i + 1}`,
+    label: `#${s.roll_number} – ${s.name}`,
+  }));
 
   useEffect(() => {
     if (!loading && (!user || !isAdmin)) {
@@ -110,13 +112,24 @@ const AdminImages = () => {
             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
-          <Tabs defaultValue="hero">
+          <Tabs defaultValue="students">
             <TabsList className="mb-6">
+              <TabsTrigger value="students">Students Data</TabsTrigger>
               <TabsTrigger value="hero">Hero</TabsTrigger>
               <TabsTrigger value="timeline">Timeline</TabsTrigger>
               <TabsTrigger value="profiles">Profiles</TabsTrigger>
             </TabsList>
 
+            <TabsContent value="students">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-foreground">Upload Student Data</h3>
+                <p className="text-sm text-muted-foreground">
+                  Upload an Excel file (.xlsx, .csv) with columns: Full Name, Roll Number, Phone Number.
+                  This data will replace all existing student entries and update the Legends wall.
+                </p>
+                <ExcelUploadSection />
+              </div>
+            </TabsContent>
             <TabsContent value="hero">
               {renderSection(HERO_KEYS, "hero")}
             </TabsContent>

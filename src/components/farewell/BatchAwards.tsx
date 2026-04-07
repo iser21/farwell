@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useStudents } from "@/hooks/useStudents";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,23 +21,6 @@ const AWARDS = [
   { id: "helpful", title: "Most Helpful ❤️", icon: Heart, gradient: "from-primary to-rose-400" },
 ] as const;
 
-const STUDENT_NAMES = [
-  "Arjun Sharma", "Priya Nair", "Ravi Kumar", "Sneha Desai", "Kabir Mehta",
-  "Ananya Iyer", "Rohan Patel", "Meera Joshi", "Aarav Gupta", "Diya Reddy",
-  "Vikram Singh", "Isha Rao", "Nikhil Verma", "Pooja Chatterjee", "Siddharth Das",
-  "Kavya Pillai", "Aditya Mishra", "Nisha Banerjee", "Rahul Tiwari", "Tanvi Saxena",
-  "Harsh Agarwal", "Simran Kapoor", "Kunal Shah", "Riya Roy", "Manish Bose",
-  "Shruti Sinha", "Deepak Chauhan", "Neha Jain", "Amit Yadav", "Anjali Malik",
-  "Varun Thakur", "Swati Pandey", "Kartik Chawla", "Divya Arora", "Suresh Khatri",
-  "Pallavi Nanda", "Mohit Rathore", "Komal Sethi", "Gaurav Bhat", "Preeti Kulkarni",
-  "Akash Dubey", "Sonal Dutta", "Tarun Lal", "Bhavna Hegde", "Vivek Menon",
-  "Megha Naik", "Rajesh Rastogi", "Jyoti Pawar", "Pranav Goswami", "Tanya Bhatt",
-  "Karan Mahajan", "Sakshi Kaur", "Ashish Dhawan", "Ritika Bajaj", "Dev Soni",
-  "Nandini Trivedi", "Yash Khanna", "Aditi Chopra", "Sahil Gill", "Kriti Grover",
-  "Ajay Mukherjee", "Madhuri Deshpande", "Tushar Mistry", "Payal Shetty",
-  "Naveen Rangan", "Shweta Khurana", "Ishan Luthra", "Khushi Kohli",
-  "Aniket Prasad", "Aisha Mirza", "Sameer Kapadia",
-];
 
 type Votes = Record<string, Record<string, number>>;
 type Selections = Record<string, string>;
@@ -67,6 +51,8 @@ function getAvatar(name: string) {
 }
 
 export function BatchAwards() {
+  const { data: students = [] } = useStudents();
+  const studentNames = useMemo(() => students.map((s) => s.name), [students]);
   const [votes, setVotes] = useState<Votes>(getStoredVotes);
   const [userVoted, setUserVoted] = useState<Record<string, boolean>>(getStoredUserVotes);
   const [selections, setSelections] = useState<Selections>({});
@@ -183,7 +169,7 @@ export function BatchAwards() {
                           />
                         </SelectTrigger>
                         <SelectContent className="max-h-60">
-                          {STUDENT_NAMES.map((name) => (
+                          {studentNames.map((name) => (
                             <SelectItem key={name} value={name}>
                               {name}
                             </SelectItem>

@@ -320,6 +320,45 @@ export type Database = {
         }
         Relationships: []
       }
+      students: {
+        Row: {
+          created_at: string
+          description: string | null
+          final_year_image: string | null
+          first_year_image: string | null
+          id: string
+          name: string
+          phone: string | null
+          roll_number: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          final_year_image?: string | null
+          first_year_image?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          roll_number: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          final_year_image?: string | null
+          first_year_image?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          roll_number?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
