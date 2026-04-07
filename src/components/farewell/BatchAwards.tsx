@@ -169,7 +169,7 @@ export function BatchAwards() {
                           />
                         </SelectTrigger>
                         <SelectContent className="max-h-60">
-                          {STUDENT_NAMES.map((name) => (
+                          {studentNames.map((name) => (
                             <SelectItem key={name} value={name}>
                               {name}
                             </SelectItem>
