@@ -7,9 +7,18 @@ import { LegendCard } from "./LegendCard";
 import { LegendModal } from "./LegendModal";
 import { useStudents } from "@/hooks/useStudents";
 
+// Build map of local legend photos: id number → URL
+const localLegendPhotos: Record<number, string> = {};
+const legendGlob = import.meta.glob("../../assets/legends/*.png", { eager: true, query: "?url", import: "default" });
+for (const [path, url] of Object.entries(legendGlob)) {
+  const num = parseInt(path.split("/").pop()!.split("-")[0]);
+  if (!isNaN(num)) localLegendPhotos[num] = url as string;
+}
+
 function studentToLegend(s: { id: string; name: string; roll_number: string; first_year_image: string | null; final_year_image: string | null; description: string | null }, index: number): Legend {
   const id = index + 1;
-  const placeholder = `https://i.pravatar.cc/400?img=${((index * 3) % 70) + 1}`;
+  const localPhoto = localLegendPhotos[id];
+  const placeholder = localPhoto || `https://i.pravatar.cc/400?img=${((index * 3) % 70) + 1}`;
   return {
     id,
     name: s.name,
