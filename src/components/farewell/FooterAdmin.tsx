@@ -3,40 +3,32 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Shield, Loader2 } from "lucide-react";
+import { Shield } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
+import { useFrontendAdmin } from "@/contexts/FrontendAdminContext";
 
 export function FooterAdmin() {
-  const { user, isAdmin, signOut } = useAuth();
+  const { isAdmin, login, logout } = useFrontendAdmin();
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [submitting, setSubmitting] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    });
-    setSubmitting(false);
-    if (error) {
-      toast.error(error.message);
-    } else {
+    if (login(email, password)) {
       toast.success("Admin mode activated! 🛡️");
       setOpen(false);
       setEmail("");
       setPassword("");
+    } else {
+      toast.error("Invalid credentials");
     }
   };
 
-  if (user && isAdmin) {
+  if (isAdmin) {
     return (
       <button
-        onClick={() => { signOut(); toast.success("Logged out"); }}
+        onClick={() => { logout(); toast.success("Logged out"); }}
         className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors inline-flex items-center gap-1"
       >
         <Shield className="w-3 h-3" /> Logout Admin
@@ -86,8 +78,8 @@ export function FooterAdmin() {
                 className="rounded-full h-11"
               />
             </div>
-            <Button type="submit" className="w-full rounded-full h-11" disabled={submitting}>
-              {submitting ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Signing in…</> : "Sign in"}
+            <Button type="submit" className="w-full rounded-full h-11">
+              Sign in
             </Button>
           </form>
         </DialogContent>

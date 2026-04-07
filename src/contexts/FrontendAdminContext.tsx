@@ -1,5 +1,4 @@
-import { createContext, useContext } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { createContext, useContext, useState, useCallback } from "react";
 
 interface FrontendAdminContextType {
   isAdmin: boolean;
@@ -15,19 +14,27 @@ const FrontendAdminContext = createContext<FrontendAdminContextType>({
 
 export const useFrontendAdmin = () => useContext(FrontendAdminContext);
 
+const ADMIN_EMAIL = "223j1a4651@raghuinstech.com";
+const ADMIN_PASSWORD = "Admin@123";
+
 export function FrontendAdminProvider({ children }: { children: React.ReactNode }) {
-  // Delegate to real Supabase auth — no hardcoded credentials
-  const { isAdmin, signOut } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(() => {
+    return sessionStorage.getItem("farewell_admin") === "true";
+  });
 
-  const login = (_email: string, _password: string) => {
-    // Frontend admin login is no longer supported via hardcoded credentials.
-    // Users should log in via /admin which uses Supabase Auth.
+  const login = useCallback((email: string, password: string) => {
+    if (email.trim().toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      setIsAdmin(true);
+      sessionStorage.setItem("farewell_admin", "true");
+      return true;
+    }
     return false;
-  };
+  }, []);
 
-  const logout = () => {
-    signOut();
-  };
+  const logout = useCallback(() => {
+    setIsAdmin(false);
+    sessionStorage.removeItem("farewell_admin");
+  }, []);
 
   return (
     <FrontendAdminContext.Provider value={{ isAdmin, login, logout }}>
