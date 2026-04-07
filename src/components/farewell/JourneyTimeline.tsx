@@ -51,7 +51,7 @@ function buildYears() {
         { contentKey: "year1_img2", fallback: FALLBACK_IMAGES.year1_img2, caption: CAPTIONS.year1_img2 },
         { contentKey: "year1_img3", fallback: FALLBACK_IMAGES.year1_img3, caption: CAPTIONS.year1_img3 },
       ] as YearImage[],
-      tags: ["Orientation", "New Friends", "First Exams"],
+      tags: ["", "", ""],
       memories: [
         "Walking into campus with zero clue and full excitement",
         "Making lifelong friends over canteen chai ☕",
@@ -67,7 +67,7 @@ function buildYears() {
         { contentKey: "year2_img2", fallback: FALLBACK_IMAGES.year2_img2, caption: CAPTIONS.year2_img2 },
         { contentKey: "year2_img3", fallback: FALLBACK_IMAGES.year2_img3, caption: CAPTIONS.year2_img3 },
       ] as YearImage[],
-      tags: ["Fests", "Late Nights", "First Crush"],
+      tags: ["", "", ""],
       memories: [
         "Leadership roles that taught us more than any textbook",
         "Late-night study sessions that turned into gossip sessions",
@@ -83,7 +83,7 @@ function buildYears() {
         { contentKey: "year3_img2", fallback: FALLBACK_IMAGES.year3_img2, caption: CAPTIONS.year3_img2 },
         { contentKey: "year3_img3", fallback: FALLBACK_IMAGES.year3_img3, caption: CAPTIONS.year3_img3 },
       ] as YearImage[],
-      tags: ["Internships", "Projects", "Growth"],
+      tags: ["", "", ""],
       memories: [
         "Internships that made us feel like real professionals",
         "Group projects where one person did all the work 😅",
@@ -99,7 +99,7 @@ function buildYears() {
         { contentKey: "year4_img2", fallback: FALLBACK_IMAGES.year4_img2, caption: CAPTIONS.year4_img2 },
         { contentKey: "year4_img3", fallback: FALLBACK_IMAGES.year4_img3, caption: CAPTIONS.year4_img3 },
       ] as YearImage[],
-      tags: ["Placements", "Farewell", "Last Memories"],
+      tags: ["", "", ""],
       memories: [
         "Placement season — stress, success, and celebration 🎉",
         "That bittersweet farewell night with all the emotions in the air",
@@ -144,19 +144,6 @@ function MiniCarousel({ images, folder }: { images: YearImage[]; folder: string 
       </AnimatePresence>
 
       <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent pointer-events-none" />
-
-      <AnimatePresence mode="wait">
-        <motion.span
-          key={current}
-          className="absolute top-3 right-3 text-[10px] font-medium bg-background/60 backdrop-blur-sm text-foreground px-2 py-0.5 rounded-full z-10"
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          {currentImage.caption}
-        </motion.span>
-      </AnimatePresence>
 
       <button
         onClick={(e) => { e.stopPropagation(); prev(); }}
@@ -264,7 +251,7 @@ export function JourneyTimeline() {
                   </div>
 
                   <div className="px-5 pt-3 flex flex-wrap gap-1.5">
-                    {item.tags.map((tag) => (
+                    {item.tags.filter(tag => tag !== "").map((tag) => (
                       <Badge key={tag} variant="secondary" className="text-[10px] font-medium">
                         {tag}
                       </Badge>
@@ -279,7 +266,7 @@ export function JourneyTimeline() {
                         initial={{ opacity: 0, x: -10 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        transition={{ delay: i *.15 + j * 0.08 }}
+                        transition={{ delay: i * .15 + j * 0.08 }}
                       >
                         <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary/60 shrink-0" />
                         {memory}
