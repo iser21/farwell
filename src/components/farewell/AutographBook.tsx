@@ -62,6 +62,7 @@ function avatarColor(name: string) {
 type Tab = "recent" | "liked";
 
 export function AutographBook() {
+  const { isAdmin } = useFrontendAdmin();
   const [entries, setEntries] = useState<AutographEntry[]>([]);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
