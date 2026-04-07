@@ -56,6 +56,7 @@ const App = () => (
       </SiteContentProvider>
     </AuthProvider>
   </ThemeProvider>
+  </QueryClientProvider>
 );
 
 export default App;
