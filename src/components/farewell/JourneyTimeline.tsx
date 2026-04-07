@@ -8,16 +8,19 @@ import { AdminImageWrapper } from "@/components/admin/AdminImageWrapper";
 // Fallback imports
 import year1Img from "@/assets/year1-classroom.jpg";
 import year1FirstDay from "@/assets/year1-firstday.jpg";
-import year1Study from "@/assets/year1-study.jpg";
-import year2Img from "@/assets/year2-fest.jpg";
+import year1Study from "@/assets/year1-firstday.jpg";      // ← reusing firstday
+
+import year2Img from "@/assets/year2-dance.jpg";           // ← reusing dance
 import year2Dance from "@/assets/year2-dance.jpg";
 import year2Canteen from "@/assets/year2-canteen.jpg";
-import year3Img from "@/assets/year3-projects.jpg";
-import year3Presentation from "@/assets/year3-presentation.jpg";
+
+import year3Img from "@/assets/year3-internship.jpg";      // ← reusing internship
+import year3Presentation from "@/assets/year3-internship.jpg"; // ← reusing internship
 import year3Internship from "@/assets/year3-internship.jpg";
-import year4Img from "@/assets/year4-farewell.jpg";
-import year4Graduation from "@/assets/year4-graduation.jpg";
-import year4Group from "@/assets/year4-groupphoto.jpg";
+
+import year4Img from "@/assets/hero-group-photo.jpg";      // ← reusing group photo
+import year4Graduation from "@/assets/hero-group-photo.jpg";
+import year4Group from "@/assets/hero-group-photo.jpg";
 
 interface YearImage {
   contentKey: string;
