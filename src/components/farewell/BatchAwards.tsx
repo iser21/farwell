@@ -18,7 +18,7 @@ const AWARDS = [
   { id: "bunk", title: "Mass Bunk Leader 😎", icon: Sparkles, gradient: "from-sky-500 to-blue-400" },
   { id: "mysterious", title: "Most Mysterious 👀", icon: Eye, gradient: "from-violet-500 to-purple-400" },
   { id: "ceo", title: "Future CEO 💼", icon: Briefcase, gradient: "from-rose-500 to-pink-400" },
-  { id: "helpful", title: "Most Helpful ❤️", icon: Heart, gradient: "from-primary to-rose-400" },
+  { id: "crush", title: "Class Crush 💘", icon: Heart, gradient: "from-primary to-rose-400" },
 ] as const;
 
 

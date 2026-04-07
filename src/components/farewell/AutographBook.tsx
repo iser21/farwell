@@ -318,8 +318,9 @@ export function AutographBook() {
               {t === "recent" ? "Recent" : "Most Liked"}
             </button>
           ))}
-          <span className="ml-auto text-xs text-muted-foreground tabular-nums">
-            <MessageCircle className="w-3.5 h-3.5 inline mr-1" />{entries.length}
+          <span className="ml-auto text-xs text-muted-foreground tabular-nums flex items-center gap-3">
+            <span><Heart className="w-3.5 h-3.5 inline mr-1 text-primary" />{entries.reduce((sum, e) => sum + e.likes, 0)}</span>
+            <span><MessageCircle className="w-3.5 h-3.5 inline mr-1" />{entries.length}</span>
           </span>
         </div>
 
