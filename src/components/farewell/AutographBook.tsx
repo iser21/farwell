@@ -123,6 +123,16 @@ export function AutographBook() {
     await supabase.from("autograph_messages").update({ likes: newLikes }).eq("id", entry.id);
   };
 
+  const handleDeleteAutograph = async (id: string) => {
+    const { error } = await supabase.from("autograph_messages").delete().eq("id", id);
+    if (error) {
+      toast.error("Failed to delete autograph");
+    } else {
+      setEntries((prev) => prev.filter((e) => e.id !== id));
+      toast.success("Autograph deleted 🗑️");
+    }
+  };
+
   const validateForm = (): boolean => {
     const trimmedName = name.trim();
     const trimmedMessage = message.trim();
