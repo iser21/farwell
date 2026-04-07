@@ -19,6 +19,7 @@ import AdminImages from "./pages/AdminImages";
 import { AdminRoute } from "./components/AdminRoute";
 
 const App = () => (
+  <QueryClientProvider client={queryClient}>
   <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="app-theme">
     <AuthProvider>
       <SiteContentProvider>
