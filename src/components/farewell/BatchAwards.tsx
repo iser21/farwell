@@ -51,6 +51,8 @@ function getAvatar(name: string) {
 }
 
 export function BatchAwards() {
+  const { data: students = [] } = useStudents();
+  const studentNames = useMemo(() => students.map((s) => s.name), [students]);
   const [votes, setVotes] = useState<Votes>(getStoredVotes);
   const [userVoted, setUserVoted] = useState<Record<string, boolean>>(getStoredUserVotes);
   const [selections, setSelections] = useState<Selections>({});
