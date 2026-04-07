@@ -359,17 +359,27 @@ export function AutographBook() {
                           </span>
                         </div>
                         <p className="text-foreground/80 text-sm leading-relaxed mt-1.5">{entry.message}</p>
-                        <button
-                          onClick={() => handleLike(entry)}
-                          className={`mt-2.5 inline-flex items-center gap-1.5 text-xs font-medium rounded-full px-3 py-1 transition-all ${
-                            liked
-                              ? "bg-primary/10 text-primary"
-                              : "text-muted-foreground hover:bg-muted"
-                          }`}
-                        >
-                          <Heart className={`w-3.5 h-3.5 transition-all ${liked ? "fill-primary text-primary scale-110" : ""}`} />
-                          {entry.likes > 0 && <span className="tabular-nums">{entry.likes}</span>}
-                        </button>
+                        <div className="flex items-center gap-2 mt-2.5">
+                          <button
+                            onClick={() => handleLike(entry)}
+                            className={`inline-flex items-center gap-1.5 text-xs font-medium rounded-full px-3 py-1 transition-all ${
+                              liked
+                                ? "bg-primary/10 text-primary"
+                                : "text-muted-foreground hover:bg-muted"
+                            }`}
+                          >
+                            <Heart className={`w-3.5 h-3.5 transition-all ${liked ? "fill-primary text-primary scale-110" : ""}`} />
+                            {entry.likes > 0 && <span className="tabular-nums">{entry.likes}</span>}
+                          </button>
+                          {isAdmin && (
+                            <button
+                              onClick={() => handleDeleteAutograph(entry.id)}
+                              className="inline-flex items-center gap-1 text-xs font-medium rounded-full px-3 py-1 text-destructive/70 hover:bg-destructive/10 hover:text-destructive transition-all"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" /> Delete
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </motion.div>
