@@ -95,7 +95,7 @@ export function AdminImageWrapper({
   };
 
   return (
-    <div className={`relative group/admin ${className}`}>
+    <div className={`group/admin ${className || 'relative'}`}>
       {children(currentUrl)}
 
       {showControls && (
