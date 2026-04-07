@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/Loader";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { Shield, Check, X, Trash2, LogOut, ArrowLeft, MessageCircleHeart, RefreshCw } from "lucide-react";
+import { Shield, Check, X, Trash2, LogOut, ArrowLeft, MessageCircleHeart, RefreshCw, Image } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface Confession {
@@ -110,6 +110,9 @@ const AdminDashboard = () => {
           </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/admin/images"><Image className="w-4 h-4 mr-1" /> Images</Link>
+            </Button>
             <Button variant="ghost" size="sm" asChild>
               <Link to="/"><ArrowLeft className="w-4 h-4 mr-1" /> Site</Link>
             </Button>
