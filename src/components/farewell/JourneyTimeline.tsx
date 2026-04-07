@@ -3,24 +3,23 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
-import { AdminImageWrapper } from "@/components/admin/AdminImageWrapper";
 
-// Fallback imports
+// Fallback imports - only files that exist in your repo
 import year1Img from "@/assets/year1-classroom.jpg";
 import year1FirstDay from "@/assets/year1-firstday.jpg";
-import year1Study from "@/assets/year1-firstday.jpg";      // ← reusing firstday
-
-import year2Img from "@/assets/year2-dance.jpg";           // ← reusing dance
-import year2Dance from "@/assets/year2-dance.jpg";
 import year2Canteen from "@/assets/year2-canteen.jpg";
-
-import year3Img from "@/assets/year3-internship.jpg";      // ← reusing internship
-import year3Presentation from "@/assets/year3-internship.jpg"; // ← reusing internship
+import year2Dance from "@/assets/year2-dance.jpg";
 import year3Internship from "@/assets/year3-internship.jpg";
+import heroGroup from "@/assets/hero-group-photo.jpg";
 
-import year4Img from "@/assets/hero-group-photo.jpg";      // ← reusing group photo
-import year4Graduation from "@/assets/hero-group-photo.jpg";
-import year4Group from "@/assets/hero-group-photo.jpg";
+// Map missing images to existing ones
+const year1Study = year1FirstDay;
+const year2Img = year2Dance;
+const year3Img = year3Internship;
+const year3Presentation = year3Internship;
+const year4Img = heroGroup;
+const year4Graduation = heroGroup;
+const year4Group = heroGroup;
 
 interface YearImage {
   contentKey: string;
@@ -70,7 +69,7 @@ function buildYears() {
       ] as YearImage[],
       tags: ["Fests", "Late Nights", "First Crush"],
       memories: [
-        "College fests where we danced like nobody watched 💃",
+        "Leadership roles that taught us more than any textbook",
         "Late-night study sessions that turned into gossip sessions",
         "First crushes, first heartbreaks, first real friendships",
         "Bunking lectures together became an art form 🎨",
@@ -88,8 +87,8 @@ function buildYears() {
       memories: [
         "Internships that made us feel like real professionals",
         "Group projects where one person did all the work 😅",
-        "Started figuring out what we actually want in life",
-        "Leadership roles that taught us more than any textbook",
+        "Presentations that we practiced more than our exams",
+        "College fests where we danced like nobody watched 💃",
       ],
     },
     {
@@ -103,7 +102,7 @@ function buildYears() {
       tags: ["Placements", "Farewell", "Last Memories"],
       memories: [
         "Placement season — stress, success, and celebration 🎉",
-        "Last chai breaks knowing they won't last forever",
+        "That bittersweet farewell night with all the emotions in the air",
         "Farewell photos with people we'll never forget",
         "Promising to stay in touch… and meaning it this time ❤️",
       ],
@@ -128,29 +127,21 @@ function MiniCarousel({ images, folder }: { images: YearImage[]; folder: string 
 
   return (
     <div className="relative h-44 overflow-hidden group">
-      <AdminImageWrapper
-        contentKey={currentImage.contentKey}
-        folder={folder}
-        className="absolute inset-0"
-      >
-        {(dbUrl) => (
-          <AnimatePresence mode="wait">
-            <motion.img
-              key={`${current}-${dbUrl || currentImage.fallback}`}
-              src={dbUrl || currentImage.fallback}
-              alt={currentImage.caption}
-              loading="lazy"
-              width={768}
-              height={512}
-              className="w-full h-full object-cover absolute inset-0"
-              initial={{ opacity: 0, scale: 1.05 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.5 }}
-            />
-          </AnimatePresence>
-        )}
-      </AdminImageWrapper>
+      <AnimatePresence mode="wait">
+        <motion.img
+          key={`${current}-${imgSrc}`}
+          src={imgSrc}
+          alt={currentImage.caption}
+          loading="lazy"
+          width={768}
+          height={512}
+          className="w-full h-full object-cover absolute inset-0"
+          initial={{ opacity: 0, scale: 1.05 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 0.5 }}
+        />
+      </AnimatePresence>
 
       <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent pointer-events-none" />
 
@@ -288,7 +279,7 @@ export function JourneyTimeline() {
                         initial={{ opacity: 0, x: -10 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        transition={{ delay: i * 0.15 + j * 0.08 }}
+                        transition={{ delay: i *.15 + j * 0.08 }}
                       >
                         <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary/60 shrink-0" />
                         {memory}
