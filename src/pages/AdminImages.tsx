@@ -29,10 +29,7 @@ const TIMELINE_KEYS = [
   { key: "year4_img3", label: "Final Year – Image 3" },
 ];
 
-const PROFILE_KEYS = legends.map((l) => ({
-  key: `profile_img_${l.id}`,
-  label: `#${l.id} – ${l.name}`,
-}));
+// Profile keys are now dynamic from useStudents
 
 const AdminImages = () => {
   const { user, isAdmin, loading, signOut } = useAuth();
