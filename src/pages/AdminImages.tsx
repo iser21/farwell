@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Loader } from "@/components/Loader";
 import { ImageUploadCard } from "@/components/admin/ImageUploadCard";
+import { ExcelUploadSection } from "@/components/admin/ExcelUploadSection";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { useStudents } from "@/hooks/useStudents";
 import { Shield, ArrowLeft, LogOut, Image } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
