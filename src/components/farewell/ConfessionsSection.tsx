@@ -53,7 +53,7 @@ function getAnonAvatar(id: string) {
 }
 
 
-const MAX_LENGTH = 300;
+const MAX_LENGTH = 2000;
 
 /* ── Confession Card (public) ── */
 function ConfessionCard({

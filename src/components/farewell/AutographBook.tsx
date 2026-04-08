@@ -240,7 +240,7 @@ export function AutographBook() {
               required
               className="rounded-xl resize-none transition-shadow focus:shadow-[0_0_0_3px_hsl(var(--ring)/0.15)]"
             />
-            <p className="text-[11px] text-muted-foreground/60 text-right tabular-nums">{message.length}/300</p>
+            <p className="text-[11px] text-muted-foreground/60 text-right tabular-nums">{message.length}/2000</p>
           </div>
 
           {/* Category Selector */}
