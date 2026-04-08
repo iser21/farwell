@@ -235,7 +235,7 @@ export function AutographBook() {
               placeholder="Write something they'll remember after years…"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              maxLength={300}
+              maxLength={2000}
               rows={3}
               required
               className="rounded-xl resize-none transition-shadow focus:shadow-[0_0_0_3px_hsl(var(--ring)/0.15)]"
