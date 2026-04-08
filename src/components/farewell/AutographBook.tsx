@@ -169,7 +169,7 @@ export function AutographBook() {
     setSubmitting(true);
     const { error } = await supabase.from("autograph_messages").insert({
       name: name.trim().slice(0, 100),
-      message: message.trim().slice(0, 300),
+      message: message.trim().slice(0, 2000),
       category,
     });
     setSubmitting(false);
