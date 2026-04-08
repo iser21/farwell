@@ -144,8 +144,8 @@ export function AutographBook() {
       toast.error("Name must be under 100 characters");
       return false;
     }
-    if (trimmedMessage.length > 300) {
-      toast.error("Message must be under 300 characters");
+    if (trimmedMessage.length > 2000) {
+      toast.error("Message must be under 2000 characters");
       return false;
     }
     if (containsBannedWords(trimmedName) || containsBannedWords(trimmedMessage)) {
