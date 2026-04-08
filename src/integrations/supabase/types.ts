@@ -41,6 +41,30 @@ export type Database = {
         }
         Relationships: []
       }
+      batch_votes: {
+        Row: {
+          award_id: string
+          created_at: string
+          id: string
+          student_name: string
+          voter_id: string
+        }
+        Insert: {
+          award_id: string
+          created_at?: string
+          id?: string
+          student_name: string
+          voter_id: string
+        }
+        Update: {
+          award_id?: string
+          created_at?: string
+          id?: string
+          student_name?: string
+          voter_id?: string
+        }
+        Relationships: []
+      }
       confessions: {
         Row: {
           category: string
