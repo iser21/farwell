@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStudents } from "@/hooks/useStudents";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +11,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Trophy, Laugh, BookOpen, Eye, Briefcase, Heart, Sparkles } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 const AWARDS = [
   { id: "clown", title: "Class Clown 😂", icon: Laugh, gradient: "from-amber-500 to-orange-400" },
@@ -21,24 +23,16 @@ const AWARDS = [
   { id: "crush", title: "Class Crush 💘", icon: Heart, gradient: "from-primary to-rose-400" },
 ] as const;
 
-
-type Votes = Record<string, Record<string, number>>;
+type VoteTally = Record<string, Record<string, number>>;
 type Selections = Record<string, string>;
 
-function getStoredVotes(): Votes {
-  try {
-    return JSON.parse(localStorage.getItem("batch-votes") || "{}");
-  } catch {
-    return {};
+function getVoterId(): string {
+  let id = localStorage.getItem("batch-voter-id");
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem("batch-voter-id", id);
   }
-}
-
-function getStoredUserVotes(): Record<string, boolean> {
-  try {
-    return JSON.parse(localStorage.getItem("batch-user-voted") || "{}");
-  } catch {
-    return {};
-  }
+  return id;
 }
 
 function getAvatar(name: string) {
@@ -53,52 +47,110 @@ function getAvatar(name: string) {
 export function BatchAwards() {
   const { data: students = [] } = useStudents();
   const studentNames = useMemo(() => students.map((s) => s.name), [students]);
-  const [votes, setVotes] = useState<Votes>(getStoredVotes);
-  const [userVoted, setUserVoted] = useState<Record<string, boolean>>(getStoredUserVotes);
+  const [tally, setTally] = useState<VoteTally>({});
+  const [userVoted, setUserVoted] = useState<Record<string, boolean>>({});
   const [selections, setSelections] = useState<Selections>({});
   const [showResults, setShowResults] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const voterId = useMemo(() => getVoterId(), []);
+
+  // Fetch all votes and determine which awards this voter already voted on
+  useEffect(() => {
+    async function fetchVotes() {
+      const { data, error } = await supabase
+        .from("batch_votes")
+        .select("award_id, student_name, voter_id");
+
+      if (error) {
+        console.error("Failed to fetch votes:", error);
+        setLoading(false);
+        return;
+      }
+
+      const newTally: VoteTally = {};
+      const voted: Record<string, boolean> = {};
+
+      for (const row of data || []) {
+        if (!newTally[row.award_id]) newTally[row.award_id] = {};
+        newTally[row.award_id][row.student_name] = (newTally[row.award_id][row.student_name] || 0) + 1;
+        if (row.voter_id === voterId) {
+          voted[row.award_id] = true;
+        }
+      }
+
+      setTally(newTally);
+      setUserVoted(voted);
+      setLoading(false);
+    }
+
+    fetchVotes();
+  }, [voterId]);
 
   const handleSelect = useCallback((awardId: string, student: string) => {
     setSelections((prev) => ({ ...prev, [awardId]: student }));
   }, []);
 
   const handleVote = useCallback(
-    (awardId: string) => {
+    async (awardId: string) => {
       const student = selections[awardId];
       if (!student || userVoted[awardId]) return;
 
-      const updated: Votes = { ...votes };
-      if (!updated[awardId]) updated[awardId] = {};
-      updated[awardId][student] = (updated[awardId][student] || 0) + 1;
+      const { error } = await supabase.from("batch_votes").insert({
+        award_id: awardId,
+        student_name: student,
+        voter_id: voterId,
+      });
 
-      const updatedUserVoted = { ...userVoted, [awardId]: true };
+      if (error) {
+        if (error.code === "23505") {
+          toast({ title: "Already voted", description: "You already voted for this award." });
+        } else {
+          toast({ title: "Error", description: "Failed to submit vote.", variant: "destructive" });
+        }
+        return;
+      }
 
-      setVotes(updated);
-      setUserVoted(updatedUserVoted);
-      localStorage.setItem("batch-votes", JSON.stringify(updated));
-      localStorage.setItem("batch-user-voted", JSON.stringify(updatedUserVoted));
+      // Update local tally
+      setTally((prev) => {
+        const updated = { ...prev };
+        if (!updated[awardId]) updated[awardId] = {};
+        updated[awardId] = { ...updated[awardId] };
+        updated[awardId][student] = (updated[awardId][student] || 0) + 1;
+        return updated;
+      });
+      setUserVoted((prev) => ({ ...prev, [awardId]: true }));
+      toast({ title: "Vote recorded! ✅" });
     },
-    [votes, userVoted, selections]
+    [selections, userVoted, voterId]
   );
 
+  // Compute top winners per award (sorted by votes desc)
   const winners = useMemo(() => {
-    const result: Record<string, string[]> = {};
+    const result: Record<string, { name: string; count: number }[]> = {};
     for (const award of AWARDS) {
-      const awardVotes = votes[award.id];
+      const awardVotes = tally[award.id];
       if (!awardVotes || Object.keys(awardVotes).length === 0) {
         result[award.id] = [];
         continue;
       }
-      const maxVotes = Math.max(...Object.values(awardVotes));
-      result[award.id] = Object.entries(awardVotes)
-        .filter(([, count]) => count === maxVotes)
-        .map(([name]) => name);
+      const sorted = Object.entries(awardVotes)
+        .map(([name, count]) => ({ name, count }))
+        .sort((a, b) => b.count - a.count);
+      // Return top (could be ties at #1)
+      const topCount = sorted[0].count;
+      result[award.id] = sorted.filter((s) => s.count === topCount);
     }
     return result;
-  }, [votes]);
+  }, [tally]);
 
-  const hasAnyVotes = Object.values(votes).some(
-    (v) => v && Object.keys(v).length > 0
+  const totalVotes = useMemo(
+    () =>
+      Object.values(tally).reduce(
+        (sum, awardVotes) =>
+          sum + Object.values(awardVotes).reduce((s, c) => s + c, 0),
+        0
+      ),
+    [tally]
   );
 
   return (
@@ -124,145 +176,154 @@ export function BatchAwards() {
           <p className="text-muted-foreground text-lg">
             Vote for the legends who made these 4 years unforgettable
           </p>
+          {totalVotes > 0 && (
+            <p className="text-xs text-muted-foreground mt-2">{totalVotes} total votes cast</p>
+          )}
         </motion.div>
 
-        <AnimatePresence mode="wait">
-          {!showResults ? (
-            <motion.div
-              key="voting"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-5"
-            >
-              {AWARDS.map((award, i) => {
-                const Icon = award.icon;
-                const voted = userVoted[award.id];
-                return (
-                  <motion.div
-                    key={award.id}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: i * 0.08 }}
-                    className="group bg-background/80 backdrop-blur-sm border border-border/50 rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
-                  >
-                    <div className="flex items-center gap-3 mb-4">
-                      <div
-                        className={`w-10 h-10 rounded-xl bg-gradient-to-br ${award.gradient} flex items-center justify-center shadow-md`}
-                      >
-                        <Icon className="w-5 h-5 text-white" />
-                      </div>
-                      <h3 className="font-display font-bold text-foreground text-lg">
-                        {award.title}
-                      </h3>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <Select
-                        onValueChange={(v) => handleSelect(award.id, v)}
-                        disabled={voted}
-                      >
-                        <SelectTrigger className="flex-1">
-                          <SelectValue
-                            placeholder={voted ? "Vote recorded ✅" : "Select a classmate"}
-                          />
-                        </SelectTrigger>
-                        <SelectContent className="max-h-60">
-                          {studentNames.map((name) => (
-                            <SelectItem key={name} value={name}>
-                              {name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Button
-                        onClick={() => handleVote(award.id)}
-                        disabled={!selections[award.id] || voted}
-                        size="sm"
-                        className="shrink-0"
-                      >
-                        {voted ? "Voted" : "Vote"}
-                      </Button>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-          ) : (
-            <motion.div
-              key="results"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-              {AWARDS.map((award, i) => {
-                const Icon = award.icon;
-                const awardWinners = winners[award.id] || [];
-                const displayName =
-                  awardWinners.length > 0
-                    ? awardWinners.length === 1
-                      ? awardWinners[0]
-                      : awardWinners.join(" & ")
-                    : "No votes yet";
-                const avatar =
-                  awardWinners.length > 0 ? getAvatar(awardWinners[0]) : null;
-
-                return (
-                  <motion.div
-                    key={award.id}
-                    initial={{ opacity: 0, scale: 0.9, y: 30 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: i * 0.12 }}
-                    className="bg-background/80 backdrop-blur-sm border border-border/50 rounded-2xl p-6 text-center shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-                  >
-                    {/* Award icon */}
-                    <div
-                      className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${award.gradient} flex items-center justify-center shadow-lg mx-auto mb-4`}
+        {loading ? (
+          <div className="text-center py-12 text-muted-foreground">Loading votes...</div>
+        ) : (
+          <AnimatePresence mode="wait">
+            {!showResults ? (
+              <motion.div
+                key="voting"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-5"
+              >
+                {AWARDS.map((award, i) => {
+                  const Icon = award.icon;
+                  const voted = userVoted[award.id];
+                  return (
+                    <motion.div
+                      key={award.id}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: i * 0.08 }}
+                      className="group bg-background/80 backdrop-blur-sm border border-border/50 rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
                     >
-                      <Icon className="w-7 h-7 text-white" />
-                    </div>
+                      <div className="flex items-center gap-3 mb-4">
+                        <div
+                          className={`w-10 h-10 rounded-xl bg-gradient-to-br ${award.gradient} flex items-center justify-center shadow-md`}
+                        >
+                          <Icon className="w-5 h-5 text-white" />
+                        </div>
+                        <h3 className="font-display font-bold text-foreground text-lg">
+                          {award.title}
+                        </h3>
+                      </div>
 
-                    <Badge variant="secondary" className="mb-3 text-xs">
-                      {award.title}
-                    </Badge>
+                      <div className="flex gap-2">
+                        <Select
+                          onValueChange={(v) => handleSelect(award.id, v)}
+                          disabled={voted}
+                        >
+                          <SelectTrigger className="flex-1">
+                            <SelectValue
+                              placeholder={voted ? "Vote recorded ✅" : "Select a classmate"}
+                            />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-60">
+                            {studentNames.map((name) => (
+                              <SelectItem key={name} value={name}>
+                                {name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          onClick={() => handleVote(award.id)}
+                          disabled={!selections[award.id] || voted}
+                          size="sm"
+                          className="shrink-0"
+                        >
+                          {voted ? "Voted" : "Vote"}
+                        </Button>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
+            ) : (
+              <motion.div
+                key="results"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                {AWARDS.map((award, i) => {
+                  const Icon = award.icon;
+                  const awardWinners = winners[award.id] || [];
+                  const displayName =
+                    awardWinners.length > 0
+                      ? awardWinners.map((w) => w.name).join(" & ")
+                      : "No votes yet";
+                  const voteCount = awardWinners.length > 0 ? awardWinners[0].count : 0;
+                  const avatar =
+                    awardWinners.length > 0 ? getAvatar(awardWinners[0].name) : null;
 
-                    {/* Winner avatar */}
-                    {avatar && (
-                      <motion.div
-                        className="w-16 h-16 rounded-full mx-auto mb-3 flex items-center justify-center text-white text-2xl font-bold shadow-lg"
-                        style={{ backgroundColor: avatar.bg }}
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 260,
-                          damping: 15,
-                          delay: i * 0.12 + 0.3,
-                        }}
+                  return (
+                    <motion.div
+                      key={award.id}
+                      initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: i * 0.12 }}
+                      className="bg-background/80 backdrop-blur-sm border border-border/50 rounded-2xl p-6 text-center shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                    >
+                      <div
+                        className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${award.gradient} flex items-center justify-center shadow-lg mx-auto mb-4`}
                       >
-                        {avatar.letter}
-                      </motion.div>
-                    )}
+                        <Icon className="w-7 h-7 text-white" />
+                      </div>
 
-                    <p className="font-display font-bold text-foreground text-lg">
-                      {displayName}
-                    </p>
+                      <Badge variant="secondary" className="mb-3 text-xs">
+                        {award.title}
+                      </Badge>
 
-                    {awardWinners.length > 1 && (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        🏆 Tied winners!
+                      {avatar && (
+                        <motion.div
+                          className="w-16 h-16 rounded-full mx-auto mb-3 flex items-center justify-center text-white text-2xl font-bold shadow-lg"
+                          style={{ backgroundColor: avatar.bg }}
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 260,
+                            damping: 15,
+                            delay: i * 0.12 + 0.3,
+                          }}
+                        >
+                          {avatar.letter}
+                        </motion.div>
+                      )}
+
+                      <p className="font-display font-bold text-foreground text-lg">
+                        {displayName}
                       </p>
-                    )}
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-          )}
-        </AnimatePresence>
 
-        {/* Toggle button */}
+                      {voteCount > 0 && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          🗳️ {voteCount} vote{voteCount !== 1 ? "s" : ""}
+                        </p>
+                      )}
+
+                      {awardWinners.length > 1 && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          🏆 Tied winners!
+                        </p>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        )}
+
         <motion.div
           className="flex justify-center mt-10"
           initial={{ opacity: 0 }}
@@ -273,7 +334,7 @@ export function BatchAwards() {
             onClick={() => setShowResults((p) => !p)}
             size="lg"
             variant={showResults ? "outline" : "default"}
-            disabled={!hasAnyVotes && !showResults}
+            disabled={totalVotes === 0 && !showResults}
             className="gap-2"
           >
             <Trophy className="w-4 h-4" />
